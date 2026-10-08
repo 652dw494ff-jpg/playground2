@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Playground BETA</title>
+<style>
+:root{--bg:#f3f5f8;--card:#fff;--text:#17202b;--muted:#687386;--line:#dfe4eb;--dark:#18202a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--text)}
+.app{max-width:1050px;margin:auto;padding:18px}
+.top{background:var(--dark);color:#fff;border-radius:24px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.logo{font-size:29px;font-weight:900;letter-spacing:-1px}.logo span{font-weight:400}
+.stats{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}.pill{background:#ffffff13;border:1px solid #ffffff26;border-radius:14px;padding:10px 14px;font-weight:800}
+.card{background:var(--card);border-radius:24px;padding:24px;margin-top:16px;box-shadow:0 7px 30px #0000000a}
+.hero{padding:30px}.hero h1{font-size:38px;margin:0 0 8px}.muted{color:var(--muted)}
+.subjects{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:20px}
+.subject{border:2px solid var(--line);border-radius:19px;background:white;padding:22px;text-align:left;cursor:pointer;min-height:170px;transition:.15s}
+.subject:hover:not(.locked){transform:translateY(-2px);border-color:#aeb7c3}
+.subject .emoji{font-size:40px}.subject h2{margin:12px 0 6px}.subject p{margin:0;color:var(--muted)}
+.subject.locked{opacity:.55;cursor:not-allowed;background:#f7f8fa}
+.badge{display:inline-block;margin-top:14px;padding:7px 10px;border-radius:10px;background:#edf0f4;font-size:13px;font-weight:800}
+.sectionTitle{font-size:24px;margin:4px 0}.trophygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}
+.trophy{border:2px solid var(--line);border-radius:17px;padding:17px;text-align:center}.trophy.locked{opacity:.35;filter:grayscale(1)}.icon{font-size:38px}.small{font-size:13px;color:var(--muted);margin-top:5px}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}.statbox{border:2px solid var(--line);border-radius:16px;padding:15px;text-align:center;background:#fff}.statnum{font-size:28px;font-weight:900}.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:15px}.shopitem{border:2px solid var(--line);border-radius:16px;padding:15px}.shopitem button{width:100%;margin-top:10px}.inventory{font-size:13px;color:var(--muted);margin-top:6px}.profile-preview{display:flex;align-items:center;gap:14px;margin:16px 0;padding:14px;border:2px solid var(--line);border-radius:18px;background:#fff}.avatar-frame{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#f8fafc;border:4px solid #cbd5e1;flex:none}.frame-blue{border-color:#3b82f6}.frame-purple{border-color:#8b5cf6}.frame-gold{border-color:#eab308}.frame-diamond{border-color:#06b6d4;box-shadow:0 0 12px rgba(6,182,212,.35)}.frame-choice{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.frame-choice button{flex:1;min-width:120px}.badgegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}.badgeitem{border:2px solid var(--line);border-radius:17px;padding:15px;text-align:center}.badgeitem.locked{opacity:.35;filter:grayscale(1)}@media(max-width:600px){.statgrid,.shopgrid,.badgegrid{grid-template-columns:1fr}}
+.modegrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.mode{border:2px solid var(--line);background:white;border-radius:16px;padding:18px;text-align:left;cursor:pointer}.mode.active{border-color:var(--dark);background:#f5f7fa}.mode b{display:block;font-size:20px;margin-bottom:5px}
+.primary,.secondary{border:0;border-radius:13px;padding:14px 18px;font-size:17px;font-weight:800;cursor:pointer}.primary{background:var(--dark);color:#fff;width:100%}.secondary{background:#e9edf2;color:var(--dark)}
+.question{text-align:center;font-size:36px;font-weight:900;margin:32px 0 20px}input{width:100%;padding:16px;border:2px solid var(--line);border-radius:13px;font-size:20px;outline:0}input:focus{border-color:var(--dark)}
+.progress{height:9px;background:#e8ecf1;border-radius:20px;overflow:hidden}.bar{height:100%;background:var(--dark);width:0;transition:.25s}.feedback{text-align:center;min-height:28px;margin:13px;font-weight:800}.hidden{display:none!important}
+.resultbox{text-align:center;padding:15px}.bigscore{font-size:38px;font-weight:900}.history div{padding:10px 0;border-bottom:1px solid #edf0f3}
+.accountbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:12px}.accountpill{background:#ffffff13;border:1px solid #ffffff26;border-radius:14px;padding:9px 12px;font-weight:800;font-size:14px}.accountbtn{border:1px solid #ffffff30;background:#ffffff12;color:#fff;border-radius:12px;padding:9px 12px;font-weight:800;cursor:pointer}.loginbox{max-width:560px;margin:70px auto}.loginbox h1{font-size:38px;margin:0 0 8px}.loginbox .primary{margin-top:12px}.loginhint{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.5}.accountmsg{text-align:center;min-height:24px;margin-top:12px;font-weight:800}.emailrow{display:flex;gap:10px}.emailrow input{flex:1}.profileline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.back{margin-bottom:14px}.mini{font-size:14px;color:var(--muted)}
+.learnbox{margin-top:24px;border-top:1px solid var(--line);padding-top:22px}
+.learnhead{display:flex;justify-content:space-between;align-items:flex-start;gap:15px}
+.learnhead h2{margin:0 0 5px}
+.info-wrap{position:relative}
+.info-btn{width:34px;height:34px;border-radius:50%;border:2px solid var(--dark);background:white;color:var(--dark);font-weight:900;font-size:18px;cursor:help}
+.info-tip{position:absolute;right:0;top:43px;width:285px;background:var(--dark);color:white;padding:14px 16px;border-radius:13px;font-size:14px;line-height:1.55;opacity:0;visibility:hidden;transform:translateY(-5px);transition:.15s;z-index:5;box-shadow:0 10px 25px #0003}
+.info-wrap:hover .info-tip,.info-wrap:focus-within .info-tip{opacity:1;visibility:visible;transform:translateY(0)}
+.learnlist{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:16px;max-height:440px;overflow:auto;padding-right:3px}
+.learnword{border:1px solid var(--line);border-radius:13px;padding:12px 14px;background:#fafbfc;display:flex;justify-content:space-between;gap:10px}
+.learnword b{font-size:16px}.learnword span{color:var(--muted);text-align:right}
+.learnword:hover{background:#f0f3f6}
+@media(max-width:760px){.top{display:block}.stats{justify-content:flex-start;margin-top:13px}.subjects,.trophygrid{grid-template-columns:1fr 1fr}.hero h1{font-size:31px}}
+@media(max-width:520px){.subjects,.trophygrid,.modegrid{grid-template-columns:1fr}.question{font-size:30px}}
+
+/* Dějepis + Přírodopis */
+.history-grid,.bio-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:18px}
+.topic-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:18px;text-align:left}
+.topic-card h3{margin:0 0 8px}.topic-card p{line-height:1.55}.lesson{background:#f8fafc;border-radius:18px;padding:18px;margin:14px 0;line-height:1.6}.lesson h3{margin-top:0}.quiz-choice{display:grid;gap:10px;margin-top:15px}.quiz-choice button{text-align:left}.food-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}.food-item{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:12px}.food-item select{width:100%;margin-top:7px;padding:9px;border-radius:10px;border:1px solid #cbd5e1}
+@media(max-width:600px){.history-grid,.bio-grid,.food-grid{grid-template-columns:1fr}}
+
+.english-table{width:100%;border-collapse:collapse;margin-top:16px;overflow:hidden;border-radius:14px}.english-table th,.english-table td{border:1px solid var(--line);padding:10px;text-align:left}.english-table th{background:#eef1f5;font-weight:900}.english-table tr:nth-child(even) td{background:#fafbfc}.english-note{background:#f8fafc;border-left:4px solid var(--dark);padding:14px 16px;border-radius:12px;margin:14px 0;line-height:1.55}.english-example{font-family:Arial,sans-serif;font-weight:700}.english-forms{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:15px}.english-form-card{border:1px solid var(--line);border-radius:15px;padding:14px;background:#fff}.english-form-card h3{margin-top:0}.english-story-line{margin:10px 0;line-height:1.65}.english-blank{font-weight:900;text-decoration:underline}.english-irregular-wrap{overflow:auto;margin-top:15px}.english-irregular-table{min-width:620px}.english-irregular-table td,.english-irregular-table th{padding:9px}.english-irregular-table th{background:#eef1f5}.english-irregular-table td{border:1px solid var(--line)}@media(max-width:650px){.english-forms{grid-template-columns:1fr}.english-table{font-size:14px}}
+body.dark .english-note,body.dark .english-form-card{background:#181b21;color:var(--text)}body.dark .english-table th,body.dark .english-irregular-table th{background:#252a33;color:var(--text)}body.dark .english-table tr:nth-child(even) td{background:#15181e}
+
+/* 🌙 Tmavý / ☀️ světlý režim */
+.theme-toggle{border:1px solid #ffffff30;background:#ffffff12;color:#fff;border-radius:12px;padding:9px 12px;font-weight:800;cursor:pointer;font-size:14px}
+body.dark{--bg:#0f1115;--card:#181b21;--text:#f4f6f8;--muted:#aeb7c5;--line:#303642;--dark:#090b0f}
+body.dark .card,body.dark .statbox,body.dark .profile-preview{background:var(--card);color:var(--text);box-shadow:0 7px 30px #0005}
+body.dark .subject,body.dark .mode,body.dark .topic-card,body.dark .lesson,body.dark .shopitem,body.dark .badgeitem,body.dark .trophy{background:#181b21;border-color:var(--line);color:var(--text)}
+body.dark .subject p,body.dark .muted,body.dark .small,body.dark .inventory,body.dark .mini{color:var(--muted)}
+body.dark .subject.locked{background:#12151a}
+body.dark .badge,body.dark .secondary{background:#252a33;color:#f4f6f8}
+body.dark .mode.active{background:#252a33;border-color:#8b95a5}
+body.dark input,body.dark select{background:#11141a;color:#f4f6f8;border-color:#3a4250}
+body.dark input::placeholder{color:#7e8795}
+body.dark .progress{background:#2a3039}
+body.dark .learnword,body.dark .food-item{background:#15181e;border-color:#303642}
+body.dark .learnword:hover{background:#20252d}
+body.dark .info-btn{background:#181b21;color:#f4f6f8;border-color:#8b95a5}
+body.dark .info-tip{background:#f4f6f8;color:#11141a}
+body.dark .history div{border-color:#303642}
+
+
+/* 🎃 HALLOWEEN SKIN */
+body.halloween{background:radial-gradient(circle at 15% 10%,#3b1b4f 0,#171021 35%,#09070d 100%);color:#f8f2ff}
+body.halloween .app{filter:none}
+body.halloween .top{background:linear-gradient(135deg,#160b20,#2b1239 55%,#111018);border:1px solid #6d3b7d;box-shadow:0 10px 35px #0008}
+body.halloween .card{background:#17111e;border:1px solid #3b2a46;color:#f8f2ff;box-shadow:0 8px 35px #0008}
+body.halloween .subject,body.halloween .mode,body.halloween .topic-card,body.halloween .lesson,body.halloween .shopitem,body.halloween .badgeitem,body.halloween .trophy,body.halloween .statbox{background:#1d1625;border-color:#493653;color:#f8f2ff}
+body.halloween .subject p,body.halloween .muted,body.halloween .small,body.halloween .mini{color:#bcaec5}
+body.halloween input,body.halloween select{background:#100c15;color:#fff;border-color:#523d5e}
+body.halloween .primary{background:linear-gradient(135deg,#ff7a00,#c93cff);border:0}
+body.halloween .badge{background:#34203e;color:#ffb45e}
+body.halloween .theme-toggle{background:#25172d;color:#fff;border-color:#654574}
+.halloween-decor{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden;display:none}
+body.halloween .halloween-decor{display:block}
+.hbat{position:absolute;font-size:28px;animation:hfly 8s linear infinite;opacity:.8}
+.hbat:nth-child(1){top:18%;left:-5%;animation-delay:0s}.hbat:nth-child(2){top:38%;left:-10%;font-size:22px;animation-delay:3s}.hbat:nth-child(3){top:62%;left:-8%;font-size:34px;animation-delay:5s}
+@keyframes hfly{from{transform:translateX(0) translateY(0) rotate(-5deg)}50%{transform:translateX(55vw) translateY(-25px) rotate(8deg)}to{transform:translateX(110vw) translateY(5px) rotate(-5deg)}}
+.hcorner{position:absolute;font-size:48px;opacity:.9}.hcorner.a{top:8px;left:8px}.hcorner.b{top:8px;right:8px}.hcorner.c{bottom:8px;left:8px}.hcorner.d{bottom:8px;right:8px}
+
+/* HALLOWEEN GLOBAL THEME - sjednoceni svetlych casti */
+body.halloween{background:#090611;color:#f4efff}
+body.halloween .card,body.halloween .statbox,body.halloween .profile-preview,
+body.halloween .subject,body.halloween .mode,body.halloween .topic-card,
+body.halloween .lesson,body.halloween .shopitem,body.halloween .badgeitem,
+body.halloween .trophy,body.halloween .food-item,body.halloween .learnword,
+body.halloween .history div{background:#120d1d!important;color:#f4efff!important;border-color:#4b285d!important;box-shadow:0 8px 30px #0008}
+body.halloween .hero,body.halloween .loginbox{background:linear-gradient(145deg,#140c20,#0b0712)!important}
+body.halloween input,body.halloween select,body.halloween textarea{background:#0b0812!important;color:#fff!important;border-color:#70408c!important}
+body.halloween input::placeholder{color:#a99ab8!important}
+body.halloween .subject p,body.halloween .muted,body.halloween .small,body.halloween .mini,
+body.halloween .inventory,body.halloween .loginhint{color:#bdb0c9!important}
+body.halloween .subject.locked{background:#0e0916!important;opacity:.72}
+body.halloween .badge,body.halloween .secondary,body.halloween .info-btn{background:#21142d!important;color:#f5efff!important;border-color:#59356d!important}
+body.halloween .mode.active{background:#2b1635!important;color:#fff!important;border-color:#ff8a18!important}
+body.halloween .progress{background:#24182d!important}
+body.halloween .primary{background:linear-gradient(135deg,#ff7a00,#ffb21c)!important;color:#170b00!important;border-color:#ff9a16!important;box-shadow:0 0 18px #ff7a0055}
+body.halloween .result,body.halloween .feedback,body.halloween .message,body.halloween .success,
+body.halloween .question-card,body.halloween .exercise-card{background:#100a18!important;color:#f7f0ff!important;border-color:#5c326f!important}
+body.halloween table,body.halloween th,body.halloween td{border-color:#4b285d!important}
+body.halloween th{background:#21142d!important;color:#ffad35!important}
+/* 🎃 Halloween: remove remaining bright/white cards while keeping rainbow HRÁT buttons */
+body.halloween .math-card,
+body.halloween .math-box,
+body.halloween .english-form-card,
+body.halloween .english-note,
+body.halloween .learnword,
+body.halloween .food-item,
+body.halloween .mode,
+body.halloween .profile-preview,
+body.halloween .avatar-frame,
+body.halloween .info-btn{
+  background:#120d1d!important;
+  color:#f4efff!important;
+  border-color:#4b285d!important;
+}
+body.halloween .math-box{background:#0e0916!important}
+body.halloween .math-history div{border-color:#4b285d!important}
+body.halloween .english-table tr:nth-child(even) td{background:#171021!important;color:#f4efff!important}
+body.halloween .english-table td,body.halloween .english-table th{color:#f4efff!important}
+body.halloween .english-story-line{color:#f4efff!important}
+body.halloween .learnword:hover{background:#1b1225!important}
+body.halloween .avatar-frame{box-shadow:0 0 15px #0008}
+body.halloween a{color:#ffad35!important}
+body.halloween h1,body.halloween h2,body.halloween h3{color:#f7efff}
+body.halloween .sectionTitle{color:#ffad35!important}
+body.halloween .theme-toggle{background:#21142d!important;color:#fff!important;border-color:#59356d!important}
+body.halloween .accountbtn{background:#21142d!important;color:#fff!important;border-color:#59356d!important}
+
+
+.orion-chat{display:flex;flex-direction:column;gap:12px;margin-top:18px}.orion-messages{min-height:260px;max-height:430px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:14px;border:2px solid var(--line);border-radius:18px;background:#0f1116}.orion-msg{max-width:88%;padding:11px 14px;border-radius:16px;line-height:1.45;white-space:pre-wrap}.orion-msg.orion{align-self:flex-start;background:#21142d;border:1px solid #59356d}.orion-msg.user{align-self:flex-end;background:#12324d;border:1px solid #245b86}.orion-inputrow{display:flex;gap:10px}.orion-inputrow input{flex:1}.orion-suggestions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.orion-suggestions button{width:auto}.orion-note{font-size:13px;color:var(--muted);line-height:1.5}
+body.halloween .orion-messages{background:#100d16;border-color:#493653}body.halloween .orion-msg.orion{background:#24132f;border-color:#6b3b7d}
+</style>
+</head>
+<body>
+<div class="halloween-decor" aria-hidden="true"><span class="hcorner a">🕸️</span><span class="hcorner b">🎃</span><span class="hcorner c">👻</span><span class="hcorner d">🕷️</span><span class="hbat">🦇</span><span class="hbat">🦇</span><span class="hbat">🦇</span></div>
+<div class="app">
+<header class="top">
+  <div>
+    <div class="logo">🎮 Playground <span style="font-size:14px;opacity:.7;vertical-align:middle">BETA</span></div>
+    <div class="accountbar">
+      <span class="accountpill">👤 <span id="accountEmail">Nepřihlášen</span></span>
+      <button class="accountbtn" onclick="showAccountScreen()">Účet</button>
+    </div>
+  </div>
+  <div class="stats">
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" title="Přepnout vzhled">🌙 Tmavý</button>
+    <button id="halloweenToggle" class="theme-toggle" onclick="toggleHalloween()" title="Halloween režim">🎃 Halloween</button><button class="theme-toggle" onclick="toggleHalloween()" title="Halloween režim">🎃 Halloween</button>
+    <button class="pill" type="button" onclick="openOrion()" title="Otevřít Orion AI">🤖 Orion</button>
+    <div class="pill">⭐ <span id="points">0</span></div>
+    <div class="pill">🔥 <span id="streak">0</span></div>
+    <div class="pill">🏆 <span id="trophyCount">0</span></div>
+  </div>
+</header>
+
+<section id="accountScreen" class="card loginbox hidden">
+  <h1>👤 Playground účet</h1>
+  <p class="muted">Přihlas se e-mailem a Playground si bude pamatovat tvoje body, poháry, série a další odměny pro tento účet.</p>
+  <div class="emailrow">
+    <input id="loginEmail" type="email" autocomplete="email" placeholder="napr. example@ouje.cz">
+    <button class="primary" style="width:auto;white-space:nowrap" onclick="loginAccount()">Přihlásit</button>
+  </div>
+  <div id="accountMsg" class="accountmsg"></div>
+  <div class="profile-preview">
+    <div id="profileAvatar" class="avatar-frame">👤</div>
+    <div><b>Tvůj profil</b><div class="mini" id="profileFrameName">Bez rámečku</div></div>
+  </div>
+  <div class="mini"><b>🎨 Rámečky profilu</b></div>
+  <div class="frame-choice">
+    <button class="secondary" onclick="equipFrame('none')">Bez rámečku</button>
+    <button class="secondary" onclick="equipFrame('blue')">🟦 Modrý</button>
+    <button class="secondary" onclick="equipFrame('purple')">🟪 Fialový</button>
+    <button class="secondary" onclick="equipFrame('gold')">🟨 Zlatý</button>
+    <button class="secondary" onclick="equipFrame('diamond')">💎 Diamantový</button>
+  </div>
+  <div class="profileline" style="margin-top:14px">
+    <span class="mini">Aktuální účet: <b id="accountScreenEmail">nepřihlášen</b></span>
+    <button class="secondary" onclick="logoutAccount()">Odhlásit</button>
+  </div>
+  <p class="loginhint">Poznámka: toto je zatím lokální účet v tomto HTML souboru. Data se ukládají v prohlížeči tohoto zařízení. Pro skutečné online účty bychom později přidali databázi a server.</p>
+</section>
+
+<section id="home">
+  <div class="card hero">
+    <h1>Uč se. Hraj. Sbírej. 🏆</h1>
+    <p class="muted">Playground je tvoje herní místo pro školní procvičování. Procvičuj školní předměty, sbírej body a odemykej odměny.</p>
+    <div class="subjects">
+      <button class="subject" onclick="openGerman()">
+        <div class="emoji">🇩🇪</div><h2>Němčina</h2><p>Slovíčka, překlady a rychlé testy.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject" onclick="openEnglish()">
+        <div class="emoji">🇬🇧</div><h2>Angličtina</h2><p>Časy, gramatika, past perfect a nepravidelná slovesa.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject" onclick="openMath()">
+        <div class="emoji">📐</div><h2>Matematika</h2><p>Procenta, vysvětlení a procvičování.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject locked" type="button" disabled aria-label="Španělština – již brzy">
+        <div class="emoji">🇪🇸</div><h2>Španělština</h2><p>Nový jazyk do Playgroundu. Připravujeme slovíčka, gramatiku a testy.</p><span class="badge">JIŽ BRZY</span>
+      </button>
+      <button class="subject" onclick="openChemistry()">
+        <div class="emoji">⚗️</div><h2>Chemie</h2><p>Oxidy, sulfidy, halogenidy, kyseliny, pH a názvosloví.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject" onclick="openCzech()">
+        <div class="emoji">📚</div><h2>Čeština</h2><p>Slovní druhy, i/y a pravopis.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject" onclick="openHistory()">
+        <div class="emoji">🌍</div><h2>Dějepis</h2><p>Průmyslová revoluce, rok 1848, národní obrození a nové ideologie.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject" onclick="openBiology()">
+        <div class="emoji">🧬</div><h2>Přírodopis</h2><p>Lidské tělo, rozmnožování a živiny.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject" onclick="openPhysics()">
+        <div class="emoji">⚡</div><h2>Fyzika</h2><p>Elektrický náboj, atomy, ionty, proud a Ohmův zákon.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject" onclick="openGeography()">
+        <div class="emoji">🌍</div><h2>Zeměpis</h2><p>Praktické situace, přírodní katastrofy, ceny, zemědělství a ekonomické dopady.</p><span class="badge">HRÁT</span>
+      </button>
+      <button class="subject" onclick="openVko()">
+        <div class="emoji">🏛️</div><h2>Výchova k občanství</h2><p>Vznik státu, znaky státu, druhy a formy států, suverenita a mezinárodní uznání.</p><span class="badge">HRÁT</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="sectionTitle">🏆 Tvoje poháry</h2>
+    <p class="muted">Poháry se odemykají postupně za body a série.</p>
+    <div class="trophygrid" id="trophyGrid"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="sectionTitle">📊 Dnešní statistika</h2>
+    <p class="muted">Počítáme, kolik úloh a bodů jsi dnes udělal/a.</p>
+    <div class="statgrid">
+      <div class="statbox"><div class="statnum" id="dailyExercises">0</div><div>📝 úloh dnes</div></div>
+      <div class="statbox"><div class="statnum" id="dailyPoints">0</div><div>⭐ bodů dnes</div></div>
+      <div class="statbox"><div class="statnum" id="totalCorrectStat">0</div><div>✅ správně celkem</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="sectionTitle">🎖️ Tvoje odznaky</h2>
+    <p class="muted">Odznaky jsou trvalé. Ani když se body smažou nebo utratí, odznaky nezmizí.</p>
+    <div class="badgegrid" id="badgeGrid"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="sectionTitle">🛍️ Obchod odměn</h2>
+    <p class="muted">Za body si můžeš koupit malé pomocníky. Nakoupené věci zůstávají v inventáři.</p>
+    <div class="shopgrid">
+      <div class="shopitem"><div style="font-size:28px">💡</div><b>Nápověda ×1</b><div class="small">30 ⭐</div><div class="inventory">V inventáři: <span id="hintCount">0</span></div><button class="primary" onclick="buyItem('hint')">Koupit za 30 ⭐</button></div>
+      <div class="shopitem"><div style="font-size:28px">🎟️</div><b>Přeskočení otázky ×1</b><div class="small">50 ⭐</div><div class="inventory">V inventáři: <span id="skipCount">0</span></div><button class="primary" onclick="buyItem('skip')">Koupit za 50 ⭐</button></div>
+      <div class="shopitem"><div style="font-size:28px">🍀</div><b>Bonusový život ×1</b><div class="small">100 ⭐</div><div class="inventory">V inventáři: <span id="lifeCount">0</span></div><button class="primary" onclick="buyItem('life')">Koupit za 100 ⭐</button></div>
+      <div class="shopitem"><div style="font-size:28px">🟦</div><b>Modrý profilový rámeček</b><div class="small">250 ⭐</div><div class="inventory">Po koupi ho můžeš aktivovat v profilu.</div><button class="primary" onclick="buyFrame('blue')">Koupit za 250 ⭐</button></div>
+      <div class="shopitem"><div style="font-size:28px">🟪</div><b>Fialový profilový rámeček</b><div class="small">400 ⭐</div><div class="inventory">Po koupi ho můžeš aktivovat v profilu.</div><button class="primary" onclick="buyFrame('purple')">Koupit za 400 ⭐</button></div>
+      <div class="shopitem"><div style="font-size:28px">🟨</div><b>Zlatý profilový rámeček</b><div class="small">750 ⭐</div><div class="inventory">Po koupi ho můžeš aktivovat v profilu.</div><button class="primary" onclick="buyFrame('gold')">Koupit za 750 ⭐</button></div>
+      <div class="shopitem"><div style="font-size:28px">💎</div><b>Diamantový profilový rámeček</b><div class="small">1 500 ⭐</div><div class="inventory">Po koupi ho můžeš aktivovat v profilu.</div><button class="primary" onclick="buyFrame('diamond')">Koupit za 1 500 ⭐</button></div>
+    </div>
+    <p id="shopMsg" class="accountmsg"></p>
+  </div>
+</section>
+
+<section id="orionScreen" class="card hidden">
+  <button class="secondary back" onclick="goHome()">← Playground</button>
+  <h1>🤖 Orion AI</h1>
+  <p class="muted">Tvůj pomocník pro orientaci v Playgroundu.</p>
+  <div class="orion-chat">
+    <div id="orionMessages" class="orion-messages"></div>
+    <div class="orion-inputrow">
+      <input id="orionInput" autocomplete="off" placeholder="Zeptej se Oriona…">
+      <button class="primary" style="width:auto;white-space:nowrap" onclick="sendOrionMessage()">Poslat</button>
+    </div>
+  </div>
+  <div class="orion-suggestions">
+    <button class="secondary" onclick="askOrion('Co tu můžu dělat?')">Co tu můžu dělat?</button>
+    <button class="secondary" onclick="askOrion('Jaké tu jsou předměty?')">Jaké jsou předměty?</button>
+    <button class="secondary" onclick="askOrion('Co je streak?')">Co je streak?</button>
+    <button class="secondary" onclick="askOrion('Co je v obchodě?')">Co je v obchodě?</button>
+  </div>
+  <p class="orion-note">ℹ️ Orion je zatím základní pomocník přímo v Playgroundu. Umí odpovídat na otázky o funkcích, předmětech, navigaci, účtu, bodech, odměnách a používání na zařízení.</p>
+</section>
+
+<section id="german" class="card hidden">
+  <button class="secondary back" onclick="goHome()">← Playground</button>
+  <h1>🇩🇪 Němčina</h1>
+  <p class="muted">Vyber směr, ve kterém chceš procvičovat.</p>
+  <div class="modegrid">
+    <button class="mode active" id="czde" onclick="setMode('czde')"><b>🇨🇿 → 🇩🇪</b>Čeština → němčina</button>
+    <button class="mode" id="decz" onclick="setMode('decz')"><b>🇩🇪 → 🇨🇿</b>Němčina → čeština</button>
+  </div>
+  <button class="primary" onclick="startGame()">🚀 Spustit 13 otázek</button>
+  <p class="mini" style="text-align:center;margin-top:12px">Správně = 10+ bodů • série přidává bonus</p>
+
+  <div class="learnbox">
+    <div class="learnhead">
+      <div>
+        <h2>📖 Učení slovíček</h2>
+        <p class="muted">Najdi si slovíčko a projdi si oba směry překladu.</p>
+      </div>
+      <div class="info-wrap">
+        <button class="info-btn" aria-label="Nápověda">i</button>
+        <div class="info-tip">
+          <b>Jak se učit?</b><br>
+          🇨🇿 → 🇩🇪 český překlad → německé slovíčko<br>
+          🇩🇪 → 🇨🇿 německé slovíčko → český překlad<br>
+          ✍️ Háčky a čárky můžeš psát i vynechat.<br>
+          🧩 <b>der / die / das</b> můžeš také vynechat.
+        </div>
+      </div>
+    </div>
+    <div class="learnlist" id="learnList"></div>
+  </div>
+</section>
+
+<section id="game" class="card hidden">
+  <button class="secondary back" onclick="openGerman()">← Němčina</button>
+  <div style="display:flex;justify-content:space-between" class="mini"><span id="modeLabel"></span><span id="counter"></span></div>
+  <div class="progress" style="margin-top:12px"><div class="bar" id="bar"></div></div>
+  <div class="question" id="question"></div>
+  <input id="answer" autocomplete="off" placeholder="Napiš odpověď…">
+  <button class="primary" style="margin-top:12px" onclick="check()">Zkontrolovat</button>
+  <div class="feedback" id="feedback"></div>
+</section>
+
+<section id="end" class="card hidden">
+  <div class="resultbox">
+    <h1>🏁 Hotovo!</h1>
+    <div class="bigscore" id="finalScore"></div>
+    <p class="muted" id="finalText"></p>
+    <button class="primary" onclick="startGame()">🔄 Zkusit znovu</button>
+    <button class="secondary" style="width:100%;margin-top:10px" onclick="openGerman()">🇩🇪 Zpět na němčinu</button>
+  </div>
+  <div class="history" id="history"></div>
+</section>
+</div>
+
+<script>
+const words=[
+["vlak","Zug"],["letadlo","Flugzeug"],["jízdenka","Fahrkarte"],["drahý","teuer"],["odjezd","Abfahrt"],["jízda","Fahrt"],["odjet","abfahren"],["levný","billig"],["odletět","abfliegen"],["odlet","Abflug"],["příjezd / přílet","Ankunft"],["zůstat","bleiben"],["jízdní kolo","Fahrrad"],["ptát se","fragen"],["létat","fliegen"],["auto","Auto"],["dálkový autobus","Fernbus"],["duben","April"],["školní prázdniny","Schulferien"],["nepohodlný","unbequem"]
+];
+const trophyDefs=[
+["🥉","Bronzový start","10 bodů"],["🥈","Učenlivý","50 bodů"],["🥇","Němčinář","100 bodů"],["🏆","Mistr slovíček","250 bodů"],["👑","Německý šampion","500 bodů"],["🔥","Série 10","10 správně za sebou"],["💎","Diamantový slovíčkář","1 000 bodů"],["🚀","Jazykový raketoplán","25 správně za sebou"],["🧠","Paměťový génius","50 správně za sebou"],["🌟","Legenda Playgroundu","2 500 bodů"]
+];
+let mode="czde",order=[],idx=0,correct=0,run=0,earned=0,results=[],quizBusy=false;
+let accounts=JSON.parse(localStorage.getItem("pg_accounts")||"{}"),currentEmail=localStorage.getItem("pg_current_email")||"";
+let points=0,trophies=[],bestStreak=0,totalCorrect=0,totalExercises=0;
+let badges=[],inventory={hint:0,skip:0,life:0,gift:0,frames:[]};
+let activeFrame="none";
+let dailyDate="",dailyExercises=0,dailyPoints=0;
+const badgeDefs=[
+ ["🌱","První krok","Udělej první úlohu"],
+ ["📝","Učenlivý","Vyřeš 25 úloh"],
+ ["📚","Pilný student","Vyřeš 100 úloh"],
+ ["🧠","Mozkový atlet","Vyřeš 250 úloh"],
+ ["🔥","Sériový hráč","Dosáhni série 10"],
+ ["🚀","Raketový hráč","Dosáhni série 25"],
+ ["🌟","Legenda","Vyřeš 500 úloh"],
+ ["☀️","Denní dříč","Udělej 10 úloh za jeden den"]
+];
+function todayKey(){return new Date().toISOString().slice(0,10)}
+function ensureDaily(){const t=todayKey();if(dailyDate!==t){dailyDate=t;dailyExercises=0;dailyPoints=0;saveCurrentAccount();} }
+function recordExercise(n=1){ensureDaily();dailyExercises+=n;totalExercises+=n;checkBadges();update()}
+function addDailyPoints(n){ensureDaily();dailyPoints+=n;checkBadges()}
+function checkBadges(){
+ const checks=[totalExercises>=1,totalExercises>=25,totalExercises>=100,totalExercises>=250,bestStreak>=10,bestStreak>=25,totalExercises>=500,dailyExercises>=10];
+ checks.forEach((yes,i)=>{if(yes&&!badges.includes(i))badges.push(i)});
+}
+
+
+// Dvojita trvala pamet: localStorage + IndexedDB. Pokud prohlizec localStorage pro lokalni HTML soubory maze, pouzije se IndexedDB.
+const DB_NAME="PlaygroundDB", DB_VERSION=1, STORE_NAME="accounts";
+function openPGDB(){
+ return new Promise((resolve,reject)=>{
+  try{
+   const req=indexedDB.open(DB_NAME,DB_VERSION);
+   req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(STORE_NAME)) req.result.createObjectStore(STORE_NAME);};
+   req.onsuccess=()=>resolve(req.result);
+   req.onerror=()=>reject(req.error);
+  }catch(e){reject(e);}
+ });
+}
+async function idbSave(){
+ try{const db=await openPGDB(); const tx=db.transaction(STORE_NAME,"readwrite"); tx.objectStore(STORE_NAME).put({accounts,currentEmail},"state"); await new Promise((res,rej)=>{tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); db.close();}catch(e){}
+}
+// Extra safety: persist the current Playground state when the page is hidden or closed.
+function autosavePlayground(){
+ try{
+  if(typeof saveCurrentAccount === "function" && currentEmail) saveCurrentAccount();
+  localStorage.setItem("pg_points",String(points||0));
+  localStorage.setItem("pg_trophies",JSON.stringify(Array.isArray(trophies)?trophies:[]));
+  localStorage.setItem("pg_current_email",currentEmail||"");
+ }catch(e){}
+}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")autosavePlayground();});
+window.addEventListener("pagehide",autosavePlayground);
+
+async function idbLoad(){
+ try{const db=await openPGDB(); const tx=db.transaction(STORE_NAME,"readonly"); const req=tx.objectStore(STORE_NAME).get("state"); const data=await new Promise((res,rej)=>{req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);}); db.close(); return data||null;}catch(e){return null;}
+}
+async function restorePersistentState(){
+ const data=await idbLoad();
+ if(!data)return;
+ const localAccounts=JSON.parse(localStorage.getItem("pg_accounts")||"{}");
+ if(Object.keys(localAccounts).length===0 && data.accounts){accounts=data.accounts;localStorage.setItem("pg_accounts",JSON.stringify(accounts));}
+ if(!currentEmail && data.currentEmail){currentEmail=data.currentEmail;localStorage.setItem("pg_current_email",currentEmail);}
+ if(currentEmail && accounts[currentEmail]){
+  const a=accounts[currentEmail]; points=Number(a.points||0); trophies=Array.isArray(a.trophies)?a.trophies:[]; bestStreak=Number(a.bestStreak||0); run=Number(a.run||0); totalCorrect=Number(a.totalCorrect||0); totalExercises=Number(a.totalExercises||0); badges=Array.isArray(a.badges)?a.badges:[]; inventory=Object.assign({hint:0,skip:0,life:0,gift:0,frames:[]},a.inventory||{}); activeFrame=a.activeFrame||"none"; dailyDate=a.dailyDate||todayKey(); dailyExercises=Number(a.dailyExercises||0); dailyPoints=Number(a.dailyPoints||0); ensureDaily();
+  syncTrophies(); saveCurrentAccount(); update();
+ }
+}
+function saveCurrentAccount(){
+ if(!currentEmail)return;
+ accounts[currentEmail]={points,trophies,bestStreak,run,totalCorrect,totalExercises,badges,inventory,activeFrame,dailyDate,dailyExercises,dailyPoints};
+ localStorage.setItem("pg_accounts",JSON.stringify(accounts));
+ localStorage.setItem("pg_current_email",currentEmail);
+ idbSave();
+}
+function loadAccount(email){
+ currentEmail=email.toLowerCase().trim();
+ const oldPoints=Number(localStorage.getItem("pg_points")||0);
+ const oldTrophies=JSON.parse(localStorage.getItem("pg_trophies")||"[]");
+ if(accounts[currentEmail]){
+   const a=accounts[currentEmail];
+   points=Number(a.points||0); trophies=Array.isArray(a.trophies)?a.trophies:[]; bestStreak=Number(a.bestStreak||0); run=Number(a.run||0); totalCorrect=Number(a.totalCorrect||0); totalExercises=Number(a.totalExercises||0); badges=Array.isArray(a.badges)?a.badges:[]; inventory=Object.assign({hint:0,skip:0,life:0,gift:0,frames:[]},a.inventory||{}); activeFrame=a.activeFrame||"none"; dailyDate=a.dailyDate||todayKey(); dailyExercises=Number(a.dailyExercises||0); dailyPoints=Number(a.dailyPoints||0); ensureDaily();
+ }else{
+   const hasOld=oldPoints>0||oldTrophies.length>0;
+   points=hasOld?oldPoints:0; trophies=hasOld?oldTrophies:[]; bestStreak=0; run=0; totalCorrect=0; totalExercises=0;
+   accounts[currentEmail]={points,trophies,bestStreak,run,totalCorrect,totalExercises,badges,inventory,activeFrame,dailyDate,dailyExercises,dailyPoints};
+ }
+ localStorage.setItem("pg_current_email",currentEmail);
+ idbSave();
+ syncTrophies();
+ saveCurrentAccount();
+ document.getElementById("accountEmail").textContent=currentEmail;
+ document.getElementById("loginEmail").value=currentEmail;
+ update();
+}
+function loginAccount(){
+ const input=document.getElementById("loginEmail");
+ const email=input.value.trim().toLowerCase();
+ const msg=document.getElementById("accountMsg");
+ if(!email||!email.includes("@")||!email.includes(".")){msg.textContent="❌ Zadej platný e-mail.";return;}
+ loadAccount(email);
+ msg.textContent="✅ Přihlášeno. Tvůj postup je načtený.";
+ setTimeout(goHome,500);
+}
+function showAccountScreen(){
+ hideAll();
+ document.getElementById("accountScreen").classList.remove("hidden");
+ document.getElementById("loginEmail").value=currentEmail;
+ document.getElementById("accountMsg").textContent=currentEmail?"":"";
+}
+function logoutAccount(){
+ saveCurrentAccount();
+ currentEmail="";
+ localStorage.removeItem("pg_current_email");
+ document.getElementById("accountEmail").textContent="Nepřihlášen";
+ points=0;trophies=[];bestStreak=0;run=0;totalCorrect=0;totalExercises=0;
+ badges=[];inventory={hint:0,skip:0,life:0,gift:0,frames:[]};activeFrame="none";dailyDate=todayKey();dailyExercises=0;dailyPoints=0;
+ update();
+ showAccountScreen();
+}
+
+function norm(s){
+  return s.trim().toLowerCase()
+    .replaceAll("á","a").replaceAll("č","c").replaceAll("ď","d").replaceAll("é","e")
+    .replaceAll("ě","e").replaceAll("í","i").replaceAll("ň","n").replaceAll("ó","o")
+    .replaceAll("ř","r").replaceAll("š","s").replaceAll("ť","t").replaceAll("ú","u")
+    .replaceAll("ů","u").replaceAll("ý","y").replaceAll("ž","z")
+    .replaceAll("ä","a").replaceAll("ö","o").replaceAll("ü","u").replaceAll("ß","ss")
+    .replace(/^(der|die|das)\\s+/,"");
+}
+function update(){
+ ensureDaily();
+ syncTrophies();
+ checkBadges();
+ document.getElementById("points").textContent=points;document.getElementById("streak").textContent=run;document.getElementById("trophyCount").textContent=trophies.length;
+ document.getElementById("dailyExercises").textContent=dailyExercises;document.getElementById("dailyPoints").textContent=dailyPoints;document.getElementById("totalCorrectStat").textContent=totalCorrect;
+ document.getElementById("hintCount").textContent=inventory.hint||0;document.getElementById("skipCount").textContent=inventory.skip||0;document.getElementById("lifeCount").textContent=inventory.life||0;
+ updateProfileUI();
+ saveCurrentAccount();
+ localStorage.setItem("pg_points",points);localStorage.setItem("pg_trophies",JSON.stringify(trophies));
+ idbSave();
+ renderTrophies();renderBadges();
+}
+function renderTrophies(){
+ document.getElementById("trophyGrid").innerHTML=trophyDefs.map((t,i)=>`<div class="trophy ${trophies.includes(i)?"":"locked"}"><div class="icon">${t[0]}</div><b>${t[1]}</b><div class="small">${t[2]}</div></div>`).join("");
+}
+function renderBadges(){
+ const el=document.getElementById("badgeGrid");if(!el)return;
+ el.innerHTML=badgeDefs.map((b,i)=>`<div class="badgeitem ${badges.includes(i)?"":"locked"}"><div class="icon">${b[0]}</div><b>${b[1]}</b><div class="small">${b[2]}</div></div>`).join("");
+}
+function buyItem(type){
+ const prices={hint:30,skip:50,life:100};
+ const names={hint:"💡 Nápověda",skip:"🎟️ Přeskočení otázky",life:"🍀 Bonusový život"};
+ const price=prices[type];
+ if(points<price){document.getElementById("shopMsg").textContent=`❌ Nemáš dost bodů. Potřebuješ ${price} ⭐.`;return;}
+ points-=price;inventory[type]=(inventory[type]||0)+1;
+ document.getElementById("shopMsg").textContent=`✅ Koupil/a sis ${names[type]}!`;update();
+}
+const frameInfo={none:["Bez rámečku","none"],blue:["🟦 Modrý rámeček","frame-blue"],purple:["🟪 Fialový rámeček","frame-purple"],gold:["🟨 Zlatý rámeček","frame-gold"],diamond:["💎 Diamantový rámeček","frame-diamond"]};
+function buyFrame(frame){
+ const prices={blue:250,purple:400,gold:750,diamond:1500};
+ if(!prices[frame])return;
+ if((inventory.frames||[]).includes(frame)){document.getElementById("shopMsg").textContent="ℹ️ Tenhle rámeček už máš.";return;}
+ if(points<prices[frame]){document.getElementById("shopMsg").textContent=`❌ Potřebuješ ${prices[frame]} ⭐.`;return;}
+ points-=prices[frame];inventory.frames=inventory.frames||[];inventory.frames.push(frame);
+ document.getElementById("shopMsg").textContent=`✅ Koupil/a sis ${frameInfo[frame][0]}! Teď ho můžeš aktivovat v profilu. 🎨`;update();
+}
+function equipFrame(frame){
+ if(frame!=="none" && !(inventory.frames||[]).includes(frame)){document.getElementById("accountMsg").textContent="🔒 Tento rámeček ještě nemáš. Kup si ho v obchodě.";return;}
+ activeFrame=frame;
+ document.getElementById("accountMsg").textContent=frame==="none"?"✅ Rámeček vypnut.":`✅ Aktivován ${frameInfo[frame][0]}!`;
+ update();
+}
+function updateProfileUI(){
+ const av=document.getElementById("profileAvatar"); if(!av)return;
+ const info=frameInfo[activeFrame]||frameInfo.none;
+ av.className="avatar-frame "+info[1];
+ document.getElementById("profileFrameName").textContent=info[0];
+}
+
+
+function syncTrophies(){
+ const newly=[];
+ const checks=[points>=10,points>=50,points>=100,points>=250,points>=500,bestStreak>=10,points>=1000,bestStreak>=25,bestStreak>=50,points>=2500];
+ checks.forEach((yes,i)=>{if(yes&&!trophies.includes(i)){trophies.push(i);newly.push(i)}});
+ return newly;
+}
+function unlock(){
+ const newly=syncTrophies();
+ update();
+ return newly;
+}
+function hideAll(){["accountScreen","home","orionScreen","german","game","end","czech","historyScreen","bioScreen","physicsScreen","geographyScreen","vkoScreen","englishScreen","chemistryScreen"].forEach(x=>{const el=document.getElementById(x);if(el)el.classList.add("hidden")}); const m=document.getElementById("mathScreen"); if(m){m.style.display="none";m.classList.add("hidden")}}
+function goHome(){hideAll();document.getElementById("home").classList.remove("hidden");renderTrophies();update()}
+function openGerman(){hideAll();document.getElementById("german").classList.remove("hidden");update()}
+function openCzech(){hideAll();document.getElementById("czech").classList.remove("hidden");hideCzechViews();update()}
+function hideCzechViews(){document.getElementById("czechHome").style.display="grid";document.getElementById("czechQuiz").style.display="none";document.getElementById("czechResult").style.display="none"}
+const czechWordQuestions=[
+ ["Jaký slovní druh je slovo „pes“?","podstatné jméno"],
+ ["Jaký slovní druh je slovo „běžet“?","sloveso"],
+ ["Jaký slovní druh je slovo „krásný“?","přídavné jméno"],
+ ["Jaký slovní druh je slovo „rychle“?","příslovce"],
+ ["Jaký slovní druh je slovo „já“?","zájmeno"],
+ ["Jaký slovní druh je slovo „tři“?","číslovka"],
+ ["Jaký slovní druh je slovo „a“?","spojka"],
+ ["Jaký slovní druh je slovo „ach“?","citoslovce"],
+ ["Jaký slovní druh je slovo „pod“?","předložka"],
+ ["Jaký slovní druh je slovo „ten“?","zájmeno"]
+];
+const czechAgreementQuestions=[
+ ["Doplň správnou koncovku: Chlapci běžel_.",["i","y","a","í"],0],
+ ["Doplň správnou koncovku: Dívky hrá_.",["i","y","a","í"],1],
+ ["Doplň správnou koncovku: Psi běhal_.",["i","y","a","í"],0],
+ ["Doplň správnou koncovku: Kočky spal_.",["i","y","a","í"],1],
+ ["Doplň správnou koncovku: Stromy rostl_.",["i","y","a","í"],1],
+ ["Doplň správnou koncovku: Učitelé opravoval_ testy.",["i","y","a","í"],0],
+ ["Doplň správnou koncovku: Kuřata běhal_. po dvoře.",["i","y","a","í"],2],
+ ["Doplň správnou koncovku: Děti si hrá_. na hřišti.",["i","y","a","í"],1],
+ ["Doplň správnou koncovku: Maminky připravoval_ oběd.",["i","y","a","í"],1],
+ ["Doplň správnou koncovku: Města byl_ večer osvětlená.",["i","y","a","í"],2]
+];
+const czechIyQuestions=[
+ ["Doplň: b_l jsem doma.","y"],
+ ["Doplň: mal_ kluk.","ý"],
+ ["Doplň: s_n byl venku.","ý"],
+ ["Doplň: m_slím na tebe.","ý"],
+ ["Doplň: b_ jsme v kině.","i"],
+ ["Doplň: vysok_ strom.","ý"],
+ ["Doplň: c_tím vůni.","í"],
+ ["Doplň: l_dé přišli.","i"],
+ ["Doplň: r_chlý vlak.","y"],
+ ["Doplň: s_nové hráli fotbal.","y"]
+];
+let czechType="word",czechQuestions=[],czechIndex=0,czechCorrect=0,czechEarned=0,czechRun=0;
+function normCzech(v){return v.trim().toLowerCase().replace(/[áä]/g,'a').replace(/éě/g,'e').replace(/í/g,'i').replace(/ó/g,'o').replace(/úů/g,'u').replace(/ý/g,'y').replace(/š/g,'s').replace(/č/g,'c').replace(/ř/g,'r').replace(/ž/g,'z').replace(/ď/g,'d').replace(/ť/g,'t').replace(/ň/g,'n')}
+function startCzechQuiz(type){czechType=type;czechQuestions=[...(type==='word'?czechWordQuestions:type==='iy'?czechIyQuestions:czechAgreementQuestions)].sort(()=>Math.random()-.5);czechIndex=0;czechCorrect=0;czechEarned=0;czechRun=0;document.getElementById('czechHome').style.display='none';document.getElementById('czechResult').style.display='none';document.getElementById('czechQuiz').style.display='block';renderCzechQuestion()}
+function renderCzechQuestion(){const q=czechQuestions[czechIndex];document.getElementById('czechLabel').textContent=czechType==='word'?'🧩 Slovní druhy':czechType==='iy'?'✍️ I / Í / Y / Ý':'🤝 Shoda podmětu s přísudkem';document.getElementById('czechProgress').textContent=`${czechIndex+1}/${czechQuestions.length}`;document.getElementById('czechBar').style.width=(czechIndex/czechQuestions.length*100)+'%';document.getElementById('czechQuestion').textContent=q[0];document.getElementById('czechFeedback').textContent='';const a=document.getElementById('czechAnswer');a.value='';a.focus()}
+function submitCzechAnswer(){const input=document.getElementById('czechAnswer');const val=input.value.trim();if(!val)return;recordExercise();const q=czechQuestions[czechIndex];const expected=czechType==='agreement'?q[1][q[2]]:q[1];let ok=normCzech(val)===normCzech(expected);let gain=0;if(ok){czechCorrect++;czechRun++;bestStreak=Math.max(bestStreak,czechRun);gain=10+Math.min((czechRun-1)*2,10);points+=gain;dailyPoints+=gain;czechEarned+=gain;document.getElementById('czechFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{czechRun=0;document.getElementById('czechFeedback').textContent=`❌ Špatně. Správná odpověď je: ${expected}`}syncTrophies();update();czechIndex++;setTimeout(()=>{if(czechIndex<czechQuestions.length)renderCzechQuestion();else finishCzech()},550)}
+function finishCzech(){document.getElementById('czechQuiz').style.display='none';document.getElementById('czechResult').style.display='block';document.getElementById('czechResultText').textContent=`${czechCorrect}/${czechQuestions.length} správně`;document.getElementById('czechPointsText').textContent=`Získal/a jsi ${czechEarned} bodů ⭐ • Celkem ${points} bodů`;update()}
+function setMode(m){mode=m;document.getElementById("czde").classList.toggle("active",m==="czde");document.getElementById("decz").classList.toggle("active",m==="decz")}
+function renderLearn(){
+ const box=document.getElementById("learnList");
+ box.innerHTML=words.map(w=>`<div class="learnword"><b>🇨🇿 ${w[0]}</b><span>🇩🇪 ${w[1]}</span></div>`).join("");
+}
+function startGame(){
+ order=[...words].sort(()=>Math.random()-.5).slice(0,13);idx=0;correct=0;run=0;earned=0;results=[];quizBusy=false;
+ hideAll();document.getElementById("game").classList.remove("hidden");
+ document.getElementById("modeLabel").textContent=mode==="czde"?"🇨🇿 → 🇩🇪":"🇩🇪 → 🇨🇿";show();update()
+}
+function show(){
+ quizBusy=false; const btn=document.querySelector("#game button.primary"); if(btn)btn.disabled=false;
+ document.getElementById("question").textContent=mode==="czde"?order[idx][0]:order[idx][1];
+ document.getElementById("counter").textContent=`${idx+1}/13`;document.getElementById("bar").style.width=(idx/13*100)+"%";
+ document.getElementById("feedback").textContent="";let a=document.getElementById("answer");a.value="";a.focus()
+}
+function check(){
+ if(quizBusy)return; let val=document.getElementById("answer").value.trim();if(!val)return; quizBusy=true; const btn=document.querySelector("#game button.primary"); if(btn)btn.disabled=true; recordExercise();
+ let expected=mode==="czde"?order[idx][1]:order[idx][0],ok=norm(val)===norm(expected);
+ if(ok){correct++;totalCorrect++;run++;bestStreak=Math.max(bestStreak,run);let gain=10+Math.min((run-1)*2,10);points+=gain;dailyPoints+=gain;earned+=gain;document.getElementById("feedback").textContent=`✅ Správně! +${gain} bodů 🔥`}
+ else{run=0;document.getElementById("feedback").textContent=`❌ Správně: ${expected}`}
+ results.push([mode==="czde"?order[idx][0]:order[idx][1],val,expected,ok]);let n=unlock();if(n.length)document.getElementById("feedback").textContent+=" 🏆";
+ setTimeout(()=>{idx++;if(idx<13)show();else finishGerman()},650)
+}
+function finishGerman(){
+ hideAll();document.getElementById("end").classList.remove("hidden");document.getElementById("bar").style.width="100%";
+ let pct=Math.round(correct/13*100),grade=pct>=90?"1️⃣":pct>=75?"2️⃣":pct>=50?"3️⃣":pct>=30?"4️⃣":"5️⃣";
+ document.getElementById("finalScore").textContent=`${correct}/13 • ${pct} %`;
+ document.getElementById("finalText").textContent=`Získal/a jsi ${earned} bodů • známka ${grade}`;
+ document.getElementById("history").innerHTML="<h3>Výsledky</h3>"+results.map(r=>`<div>${r[3]?"✅":"❌"} <b>${r[0]}</b> → ${r[1]}${r[3]?"":" · správně: "+r[2]}</div>`).join("");
+ update()
+}
+document.getElementById("answer").addEventListener("keydown",e=>{if(e.key==="Enter")check()});
+renderTrophies();renderBadges();renderLearn();update();
+</script>
+
+<style>
+.math-screen{display:none;padding:18px}.math-card{padding:18px;border:2px solid var(--line);border-radius:19px;background:#fff;margin:14px 0}.math-card h3{margin:0 0 6px}.math-card button{width:100%;margin-top:10px}.math-box{padding:16px;border-radius:16px;background:#f5f5f5;margin:12px 0;line-height:1.55}.math-answer{width:100%;box-sizing:border-box;padding:13px;border:2px solid var(--line);border-radius:13px;font-size:20px}.math-levels{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.math-levels button{flex:1;min-width:100px}.math-feedback{text-align:center;min-height:30px;margin:12px 0;font-weight:800}.math-result{text-align:center}.math-history{margin-top:16px}.math-history div{padding:9px 0;border-bottom:1px solid #edf0f3}@media(max-width:600px){.math-levels{flex-direction:column}}
+</style>
+<section id="englishScreen" class="card hidden">
+<button class="secondary back" onclick="goHome()">← Playground</button>
+<h1>🇬🇧 Angličtina</h1>
+<p class="muted">Gramatika podle toho, co právě probíráš ve škole. Nejprve výklad, potom pořádné procvičování.</p>
+
+<div id="englishHome" class="history-grid">
+  <div class="topic-card"><h3>📘 Verb Tenses – přehled</h3><p>Present, past, perfect, continuous a future. Nauč se, kdy který čas použít.</p><button class="primary" onclick="showEnglishTenses()">INFO</button></div>
+  <div class="topic-card"><h3>⏳ Past Perfect</h3><p>Had + 3. tvar slovesa, pořadí dvou dějů v minulosti a zápory i otázky.</p><button class="primary" onclick="showEnglishPastPerfect()">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🎯 English Grammar – Verb Tenses</h3><p>Vyber správný čas podle významu věty. Úlohy podobné školnímu testu.</p><button class="primary" onclick="showEnglishLevels()">HRÁT</button></div>
+  <div class="topic-card"><h3>👜 Lost Wallet – příběh</h3><p>Doplň správné tvary sloves do příběhu. Past simple, past continuous a past perfect.</p><button class="primary" onclick="startEnglishWallet()">HRÁT</button></div>
+  <div class="topic-card"><h3>📚 Irregular Verbs</h3><p>Infinitive → past simple → past participle. Přehled i vlastní procvičení.</p><button class="primary" onclick="showEnglishIrregulars()">INFO + HRÁT</button></div>
+</div>
+
+<div id="englishTenses" style="display:none"></div>
+<div id="englishPastPerfect" style="display:none"></div>
+<div id="englishLevels" style="display:none">
+  <button class="secondary back" onclick="openEnglish()">← Angličtina</button>
+  <h2>🎯 English Grammar – Verb Tenses</h2>
+  <p class="muted">Vyber obtížnost. Každá úroveň má 10 otázek.</p>
+  <div class="modegrid">
+    <button class="mode" onclick="startEnglishTensesQuiz(1)"><b>1️⃣ Lehká</b>Základní časy a typické signály.</button>
+    <button class="mode" onclick="startEnglishTensesQuiz(2)"><b>2️⃣ Střední</b>Více časů v jedné sadě.</button>
+    <button class="mode" onclick="startEnglishTensesQuiz(3)"><b>3️⃣ Těžká</b>Past perfect, perfect continuous a chytáky.</button>
+  </div>
+</div>
+
+<div id="englishQuiz" style="display:none">
+  <button class="secondary back" onclick="showEnglishLevels()">← Výběr obtížnosti</button>
+  <div style="display:flex;justify-content:space-between" class="mini"><span id="englishQuizLabel"></span><span id="englishQuizProgress"></span></div>
+  <div class="progress" style="margin-top:12px"><div class="bar" id="englishBar"></div></div>
+  <div class="question" id="englishQuestion"></div>
+  <div id="englishChoices" class="quiz-choice"></div>
+  <div id="englishFeedback" class="feedback"></div>
+</div>
+
+<div id="englishPastQuiz" style="display:none">
+  <button class="secondary back" onclick="showEnglishPastPerfect()">← Past Perfect</button>
+  <div style="display:flex;justify-content:space-between" class="mini"><span>⏳ Past Perfect</span><span id="englishPastProgress"></span></div>
+  <div class="progress" style="margin-top:12px"><div class="bar" id="englishPastBar"></div></div>
+  <div class="question" id="englishPastQuestion"></div>
+  <input id="englishPastAnswer" autocomplete="off" placeholder="Napiš správný tvar…">
+  <button class="primary" style="margin-top:12px" onclick="submitEnglishPast()">Zkontrolovat</button>
+  <div id="englishPastFeedback" class="feedback"></div>
+</div>
+
+<div id="englishWallet" style="display:none">
+  <button class="secondary back" onclick="openEnglish()">← Angličtina</button>
+  <h2>👜 Lost Wallet</h2>
+  <p class="muted">Doplň správný tvar slovesa. Příběh je nový a je zaměřený na pořadí dějů v minulosti.</p>
+  <div class="lesson" id="englishWalletText"></div>
+  <div class="question" id="englishWalletQuestion"></div>
+  <input id="englishWalletAnswer" autocomplete="off" placeholder="Napiš správný tvar…">
+  <button class="primary" style="margin-top:12px" onclick="submitEnglishWallet()">Zkontrolovat</button>
+  <div id="englishWalletFeedback" class="feedback"></div>
+  <p id="englishWalletProgress" class="mini" style="text-align:center"></p>
+</div>
+
+<div id="englishIrregulars" style="display:none"></div>
+<div id="englishIrregularQuiz" style="display:none">
+  <button class="secondary back" onclick="showEnglishIrregulars()">← Irregular Verbs</button>
+  <div style="display:flex;justify-content:space-between" class="mini"><span>📚 Irregular Verbs</span><span id="englishIrregularProgress"></span></div>
+  <div class="progress" style="margin-top:12px"><div class="bar" id="englishIrregularBar"></div></div>
+  <div class="question" id="englishIrregularQuestion"></div>
+  <input id="englishIrregularAnswer" autocomplete="off" placeholder="Napiš správný tvar…">
+  <button class="primary" style="margin-top:12px" onclick="submitEnglishIrregular()">Zkontrolovat</button>
+  <div id="englishIrregularFeedback" class="feedback"></div>
+</div>
+
+<div id="englishResult" style="display:none" class="resultbox">
+  <h2>🎉 Hotovo!</h2><div id="englishResultText" class="bigscore"></div><p id="englishPointsText" class="muted"></p>
+  <button class="primary" onclick="openEnglish()">🔄 Zpět na angličtinu</button>
+</div>
+</section>
+
+<section id="czech" class="card hidden">
+  <button class="secondary back" onclick="goHome()">← Playground</button>
+  <h1>📚 Čeština</h1>
+  <p class="muted">Vyber si, co chceš procvičovat.</p>
+  <div id="czechHome" class="modegrid">
+    <button class="mode" onclick="startCzechQuiz('word')"><b>🧩 Slovní druhy</b>Určuj slovní druhy slov.</button>
+    <button class="mode" onclick="startCzechQuiz('iy')"><b>✍️ I / Í / Y / Ý</b>Doplň správné i, í, y nebo ý.</button>
+    <button class="mode" onclick="startCzechQuiz('agreement')"><b>🤝 Shoda podmětu s přísudkem</b>Urči správný tvar přísudku podle podmětu.</button>
+  </div>
+  <div id="czechQuiz" style="display:none">
+    <div style="display:flex;justify-content:space-between" class="mini"><span id="czechLabel"></span><span id="czechProgress"></span></div>
+    <div class="progress" style="margin-top:12px"><div class="bar" id="czechBar"></div></div>
+    <div class="question" id="czechQuestion"></div>
+    <input id="czechAnswer" autocomplete="off" placeholder="Napiš odpověď…">
+    <button class="primary" style="margin-top:12px" onclick="submitCzechAnswer()">Zkontrolovat</button>
+    <div class="feedback" id="czechFeedback"></div>
+  </div>
+  <div id="czechResult" style="display:none" class="math-result">
+    <h2>🎉 Hotovo!</h2><div id="czechResultText" class="bigscore"></div>
+    <p id="czechPointsText" class="muted"></p>
+    <button class="primary" onclick="openCzech()">🔄 Zpět na češtinu</button>
+  </div>
+</section>
+
+
+<section id="historyScreen" class="card hidden">
+<button class="secondary back" onclick="goHome()">← Playground</button>
+<h1>🌍 Dějepis</h1>
+<p class="muted">Vyber si téma. Nejprve si můžeš přečíst výklad a potom ho procvičit.</p>
+<div id="historyHome" class="history-grid">
+  <div class="topic-card"><h3>🏭 Průmyslová revoluce</h3><p>Počátky průmyslové výroby, parní stroj, továrny, železnice, urbanizace a vznik dělnické třídy.</p><button class="primary" onclick="showHistoryLesson('industry')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🇪🇺 Revoluce 1848</h3><p>Revoluční vlna v Evropě, Francie, habsburská monarchie a události v českých zemích.</p><button class="primary" onclick="showHistoryLesson('1848')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🇨🇿 Národní obrození</h3><p>Obnova českého jazyka, kultury a národního vědomí od konce 18. století do 19. století.</p><button class="primary" onclick="showHistoryLesson('revival')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>💡 Politické ideologie</h3><p>Konzervatismus, liberalismus a nacionalismus – jejich hlavní myšlenky a rozdíly.</p><button class="primary" onclick="showHistoryLesson('ideologies')">INFO + HRÁT</button></div>
+</div>
+<div id="historyLesson" style="display:none"></div>
+<div id="historyQuiz" style="display:none" class="math-result"><div class="mini" id="historyProgress"></div><h2 id="historyQuestion"></h2><div id="historyChoices" class="quiz-choice"></div><div id="historyFeedback" class="math-feedback"></div></div>
+<div id="historyResult" style="display:none" class="math-result"><h2>🎉 Hotovo!</h2><div id="historyResultText" class="bigscore"></div><p id="historyPointsText" class="muted"></p><button class="primary" onclick="openHistory()">🔄 Zpět na dějepis</button></div>
+</section>
+
+<section id="bioScreen" class="card hidden">
+<button class="secondary back" onclick="goHome()">← Playground</button>
+<h1>🧬 Přírodopis</h1>
+<p class="muted">Lidské tělo, rozmnožování a základní živiny.</p>
+<div id="bioHome" class="bio-grid">
+  <div class="topic-card"><h3>🧍 Lidské tělo a rozmnožování</h3><p>Puberta, mužská a ženská rozmnožovací soustava, oplození, těhotenství a základní pojmy.</p><button class="primary" onclick="showBioLesson()">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🍎 Potraviny a živiny</h3><p>Sacharidy, tuky, bílkoviny, vitaminy, minerální látky a voda.</p><button class="primary" onclick="startFoodExercise()">ROZDĚLIT POTRAVINY</button></div>
+</div>
+<div id="bioLesson" style="display:none"></div>
+<div id="bioQuiz" style="display:none" class="math-result"><div class="mini" id="bioProgress"></div><h2 id="bioQuestion"></h2><div id="bioChoices" class="quiz-choice"></div><div id="bioFeedback" class="math-feedback"></div></div>
+<div id="foodExercise" style="display:none" class="math-result"><h2>🍽️ Rozděl potraviny</h2><p class="muted">U každé potraviny vyber hlavní živinu, kterou v tomto cvičení představuje.</p><div id="foodGrid" class="food-grid"></div><button class="primary" onclick="checkFoodExercise()">Zkontrolovat</button><div id="foodFeedback" class="math-feedback"></div></div>
+<div id="bioResult" style="display:none" class="math-result"><h2>🎉 Hotovo!</h2><div id="bioResultText" class="bigscore"></div><p id="bioPointsText" class="muted"></p><button class="primary" onclick="openBiology()">🔄 Zpět na přírodopis</button></div>
+</section>
+
+
+<section id="vkoScreen" class="card hidden">
+<button class="secondary back" onclick="goHome()">← Playground</button>
+<h1>🏛️ Výchova k občanství</h1>
+<p class="muted">Stát, jeho základní znaky, druhy a formy, suverenita a mezinárodní uznání.</p>
+<div id="vkoHome" class="history-grid">
+  <div class="topic-card"><h3>🏛️ Co je stát a jak vzniká?</h3><p>Co stát znamená, proč vzniká a jaké základní znaky musí mít.</p><button class="primary" onclick="showVkoLesson('state')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🗺️ Druhy států</h3><p>Unitární stát, federace a základní rozdíly mezi nimi.</p><button class="primary" onclick="showVkoLesson('types')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>👑 Formy státu</h3><p>Monarchie a republika, jejich hlavní podoby a rozdíly.</p><button class="primary" onclick="showVkoLesson('forms')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🌍 Suverenita a uznání</h3><p>Co znamená suverenita a proč je mezinárodní uznání pro stát důležité.</p><button class="primary" onclick="showVkoLesson('recognition')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🏴 Liberland jako příklad</h3><p>Modelový příklad k otázce, zda samotné vyhlášení automaticky vytvoří stát.</p><button class="primary" onclick="showVkoLesson('liberland')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🧠 Velké opakování</h3><p>Namíchané otázky ze všech témat.</p><button class="primary" onclick="startVkoQuiz('all')">🎯 PROCVIČOVAT</button></div>
+</div>
+<div id="vkoLesson" style="display:none"></div>
+<div id="vkoQuiz" style="display:none" class="math-result"><div class="mini" id="vkoProgress"></div><h2 id="vkoQuestion"></h2><div id="vkoChoices" class="quiz-choice"></div><div id="vkoFeedback" class="math-feedback"></div></div>
+<div id="vkoResult" style="display:none" class="math-result"><h2>🎉 Hotovo!</h2><div id="vkoResultText" class="bigscore"></div><p id="vkoPointsText" class="muted"></p><button class="primary" onclick="openVko()">🔄 Zpět na VKO</button></div>
+</section>
+<section id="geographyScreen" class="card hidden">
+<button class="secondary back" onclick="goHome()">← Playground</button>
+<h1>🌍 Zeměpis</h1>
+<p class="muted">Praktický zeměpis: co se stane s lidmi, krajinou, výrobou, cenami a ekonomikou, když se změní podmínky?</p>
+<div id="geographyHome" class="history-grid">
+  <div class="topic-card"><h3>🌊 Povodeň u pobřeží</h3><p>Vlna zaplaví farmu u moře. Zjisti, co se stane s úrodou, půdou, cenami a příjmem farmáře.</p><button class="primary" onclick="showGeographyLesson('flood')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>☀️ Sucho a zemědělství</h3><p>Málo vody znamená menší úrodu. Jak se může změnit nabídka potravin a jejich cena?</p><button class="primary" onclick="showGeographyLesson('drought')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🚢 Doprava a ceny</h3><p>Výpadek důležité dopravní trasy zdraží přepravu. Jak se to může projevit v obchodech?</p><button class="primary" onclick="showGeographyLesson('transport')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🌋 Katastrofa a region</h3><p>Zemětřesení nebo sopečná erupce poškodí město. Co se stane s prací, bydlením a podniky?</p><button class="primary" onclick="showGeographyLesson('disaster')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🌾 Úroda a trh</h3><p>Farmářům se kvůli počasí nepodaří sklidit běžné množství. Propoj výrobu, nabídku a cenu.</p><button class="primary" onclick="showGeographyLesson('market')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🧠 Velké opakování</h3><p>Namíchané situace. Rozhodni, co je příčina, následek a jaký může být ekonomický dopad.</p><button class="primary" onclick="startGeographyQuiz('all')">🎯 PROCVIČOVAT</button></div>
+</div>
+<div id="geographyLesson" style="display:none"></div>
+<div id="geographyQuiz" style="display:none">
+  <p class="mini" id="geographyProgress"></p><h2 id="geographyQuestion"></h2><div id="geographyChoices" class="quiz-choice"></div><div id="geographyFeedback" class="feedback"></div>
+</div>
+<div id="geographyResult" style="display:none"><h2>🌍 Výsledek</h2><p id="geographyResultText"></p><p id="geographyPointsText"></p><button class="primary" onclick="openGeography()">Zpět na Zeměpis</button></div>
+</section>
+
+<section id="physicsScreen" class="card hidden">
+<button class="secondary back" onclick="goHome()">← Playground</button>
+<h1>⚡ Fyzika</h1>
+<p class="muted">Elektrický náboj, atomy, ionty, elektrování těles, elektroskop, elektrický proud a Ohmův zákon.</p>
+<div id="physicsHome" class="history-grid">
+  <div class="topic-card"><h3>⚛️ Elektrický náboj a atom</h3><p>Elektrický náboj, protony, elektrony, elektricky neutrální atom a ionty.</p><button class="primary" onclick="showPhysicsLesson('charge')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🧲 Elektrování těles</h3><p>Jak může těleso získat nebo ztratit elektrony a co znamená kladný a záporný náboj.</p><button class="primary" onclick="showPhysicsLesson('charging')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>📡 Elektroskop</h3><p>Jednoduchý přístroj pro zjišťování elektrického náboje.</p><button class="primary" onclick="showPhysicsLesson('electroscope')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🔋 Elektrický proud</h3><p>Elektrický proud, elektrický obvod, proud, napětí a základní pojmy.</p><button class="primary" onclick="showPhysicsLesson('current')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>📐 Ohmův zákon</h3><p>Vztah mezi napětím, proudem a odporem: U = R · I.</p><button class="primary" onclick="showPhysicsLesson('ohm')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🧠 Velké opakování</h3><p>Mix otázek ze všech témat elektřiny.</p><button class="primary" onclick="startPhysicsQuiz('mix')">HRÁT</button></div>
+</div>
+<div id="physicsLesson" style="display:none"></div>
+<div id="physicsQuiz" style="display:none" class="math-result"><div class="mini" id="physicsProgress"></div><h2 id="physicsQuestion"></h2><div id="physicsChoices" class="quiz-choice"></div><div id="physicsFeedback" class="math-feedback"></div></div>
+<div id="physicsResult" style="display:none" class="math-result"><h2>🎉 Hotovo!</h2><div id="physicsResultText" class="bigscore"></div><p id="physicsPointsText" class="muted"></p><button class="primary" onclick="openPhysics()">🔄 Zpět na fyziku</button></div>
+</section>
+
+
+<section id="chemistryScreen" class="card hidden">
+<button class="secondary back" onclick="goHome()">← Playground</button>
+<h1>⚗️ Chemie</h1>
+<p class="muted">Názvosloví, oxidy, sulfidy, halogenidy, kyseliny, pH a laboratorní práce.</p>
+<div id="chemistryHome" class="history-grid">
+  <div class="topic-card"><h3>🧪 Oxidy</h3><p>Sloučeniny kyslíku s jiným prvkem. Procvič vzorce, názvy a základní pravidla názvosloví.</p><button class="primary" onclick="showChemLesson('oxides')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🟡 Sulfidy</h3><p>Sloučeniny síry s jiným prvkem. Zopakuj názvy a vzorce.</p><button class="primary" onclick="showChemLesson('sulfides')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🟢 Halogenidy</h3><p>Sloučeniny halogenů, například chloridy, bromidy, fluoridy a jodidy.</p><button class="primary" onclick="showChemLesson('halides')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🧴 Kyseliny</h3><p>Co jsou kyseliny, jak poznat jejich vzorce a jak se liší například HCl, H₂SO₄ a HNO₃.</p><button class="primary" onclick="showChemLesson('acids')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>📊 pH</h3><p>Stupnice pH, kyselé, neutrální a zásadité prostředí a jednoduché příklady.</p><button class="primary" onclick="showChemLesson('ph')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🔬 Laboratorní práce</h3><p>Bezpečnost, pozorování, zápis výsledků a základní práce s chemickými látkami.</p><button class="primary" onclick="showChemLesson('lab')">INFO + HRÁT</button></div>
+  <div class="topic-card"><h3>🧠 Velké opakování</h3><p>Smíchané otázky ze všech chemických témat.</p><button class="primary" onclick="startChemQuiz('all')">🎯 PROCVIČOVAT</button></div>
+</div>
+<div id="chemistryLesson" style="display:none"></div>
+<div id="chemistryQuiz" style="display:none" class="math-result"><div class="mini" id="chemProgress"></div><h2 id="chemQuestion"></h2><div id="chemChoices" class="quiz-choice"></div><div id="chemFeedback" class="math-feedback"></div></div>
+<div id="chemistryResult" style="display:none" class="math-result"><h2>🎉 Hotovo!</h2><div id="chemResultText" class="bigscore"></div><p id="chemPointsText" class="muted"></p><button class="primary" onclick="openChemistry()">🔄 Zpět na chemii</button></div>
+</section>
+
+<section id="mathScreen" class="math-screen card">
+<button class="secondary back" onclick="mathBack()">← Playground</button>
+<h1>📐 Matematika</h1>
+<p class="muted">Vyber si, co chceš procvičovat.</p>
+<div id="mathHome">
+  <div class="math-card"><h3>📊 Procenta</h3><p class="muted">Vysvětlení procent a procvičování podle obtížnosti.</p><button class="primary" onclick="showPercentExplanation()">HRÁT</button></div>
+  <div class="math-card"><h3>➕➖ Sčítání a odčítání</h3><p class="muted">Lehké příklady na plus a minus.</p><button class="primary" onclick="showPlusMinusLevels()">HRÁT</button></div>
+  <div class="math-card"><h3>🔤 Algebraické výrazy</h3><p class="muted">Proměnné, dosazování, zjednodušování a závorky.</p><button class="primary" onclick="showAlgebraExplanation()">HRÁT</button></div>
+</div>
+<div id="percentExplanation" style="display:none"><h2>📖 Procenta – vysvětlení</h2><div class="math-box"><b>1 %</b> je jedna setina celku. Celkem je 100 %.</div><div class="math-box"><b>X % z čísla:</b><br>20 % z 150 = 150 × 20 ÷ 100 = <b>30</b></div><div class="math-box"><b>Převod:</b><br>25 % = 25 ÷ 100 = <b>0,25</b></div><div class="math-box"><b>Tip 🧠</b><br>50 % = polovina • 25 % = čtvrtina • 10 % = desetina</div><button class="primary" onclick="showMathLevels()">🎯 Procvičování</button></div>
+<div id="mathLevels" style="display:none"><h2>🎯 Vyber obtížnost</h2><div class="math-levels"><button class="secondary" onclick="startPercentQuiz(1)">1️⃣ Lehká</button><button class="secondary" onclick="startPercentQuiz(2)">2️⃣ Střední</button><button class="secondary" onclick="startPercentQuiz(3)">3️⃣ Nejtěžší</button></div></div>
+<div id="plusMinusLevels" style="display:none"><h2>🎯 Vyber obtížnost</h2><div class="math-levels"><button class="secondary" onclick="startPlusMinus(1)">1️⃣ Lehká</button><button class="secondary" onclick="startPlusMinus(2)">2️⃣ Střední</button><button class="secondary" onclick="startPlusMinus(3)">3️⃣ Nejtěžší</button></div></div>
+<div id="mathQuiz" style="display:none"><p id="mathProgress" class="mini"></p><div class="question" id="mathQuestion"></div><input id="mathAnswer" class="math-answer" inputmode="decimal" placeholder="Napiš výsledek…"><button class="primary" style="margin-top:12px" onclick="submitMathAnswer()">Zkontrolovat</button><button class="secondary" onclick="skipMathQuestion('percent')">🎟️ Přeskočit otázku <span id="mathSkipCount">(0)</span></button><div id="mathFeedback" class="math-feedback"></div></div>
+<div id="plusMinusQuiz" style="display:none"><p id="plusMinusProgress" class="mini"></p><div class="question" id="plusMinusQuestion"></div><input id="plusMinusAnswer" class="math-answer" inputmode="numeric" placeholder="Napiš výsledek…"><button class="primary" style="margin-top:12px" onclick="submitPlusMinus()">Zkontrolovat</button><button class="secondary" onclick="skipMathQuestion('plusminus')">🎟️ Přeskočit otázku <span id="plusSkipCount">(0)</span></button><div id="plusMinusFeedback" class="math-feedback"></div></div>
+<div id="algebraExplanation" style="display:none"><h2>📖 Algebraické výrazy – vysvětlení</h2><div class="math-box"><b>Proměnná</b> je písmeno, které zastupuje číslo. Například <b>x + 5</b>.</div><div class="math-box"><b>Dosazování:</b> když x = 3, potom x + 5 = 3 + 5 = <b>8</b>.</div><div class="math-box"><b>Podobné členy:</b> 3x + 2x = <b>5x</b>. Čísla před stejnou proměnnou sečteme.</div><div class="math-box"><b>Závorky:</b> 2(x + 3) = 2x + 6.</div><button class="primary" onclick="showAlgebraLevels()">🎯 Procvičování</button></div>
+<div id="algebraLevels" style="display:none"><h2>🎯 Vyber obtížnost</h2><div class="math-levels"><button class="secondary" onclick="startAlgebra(1)">1️⃣ Lehká</button><button class="secondary" onclick="startAlgebra(2)">2️⃣ Střední</button><button class="secondary" onclick="startAlgebra(3)">3️⃣ Nejtěžší</button></div></div>
+<div id="algebraQuiz" style="display:none"><p id="algebraProgress" class="mini"></p><div class="question" id="algebraQuestion"></div><input id="algebraAnswer" class="math-answer" inputmode="decimal" placeholder="Napiš výsledek…"><button class="primary" style="margin-top:12px" onclick="submitAlgebra()">Zkontrolovat</button><button class="secondary" onclick="skipMathQuestion('algebra')">🎟️ Přeskočit otázku <span id="algebraSkipCount">(0)</span></button><div id="algebraFeedback" class="math-feedback"></div></div>
+<div id="mathResult" style="display:none" class="math-result"><h2>🎉 Hotovo!</h2><div id="mathResultText" class="bigscore"></div><p id="mathPointsText" class="muted"></p><div id="mathHistory" class="math-history"></div><button class="primary" onclick="openMath()">🔄 Zpět na matematiku</button></div>
+</section>
+<script>
+const percentQuestions={1:[['Kolik je 10 % z 100?','10'],['Kolik je 50 % z 80?','40'],['Kolik je 25 % z 100?','25'],['Kolik je 20 % z 50?','10'],['Kolik je 10 % z 300?','30']],2:[['Kolik je 15 % z 200?','30'],['Kolik je 30 % z 150?','45'],['Kolik je 12 % z 250?','30'],['Kolik je 35 % z 200?','70'],['Kolik je 75 % z 160?','120']],3:[['Cena 800 Kč se zvýší o 15 %. Jaká bude nová cena?','920'],['Tričko stojí 1200 Kč a je zlevněné o 25 %. Kolik stojí po slevě?','900'],['Ve třídě je 24 žáků. 37,5 % z nich je nepřítomných. Kolik žáků chybí?','9'],['Po slevě 20 % stojí výrobek 640 Kč. Jaká byla původní cena?','800'],['Cena se zvýšila z 500 Kč na 575 Kč. O kolik procent se zvýšila?','15']]};
+let mathQuestions=[],mathIndex=0,mathCorrect=0,mathLevel=1,mathEarned=0,mathRun=0,mathHistory=[],mathBusy=false;
+let plusMinusQuestions=[],plusMinusIndex=0,plusMinusCorrect=0,plusMinusEarned=0,plusMinusRun=0,plusMinusHistory=[],plusMinusLevel=1,plusMinusBusy=false;
+function hideMathViews(){['mathHome','percentExplanation','mathLevels','plusMinusLevels','mathQuiz','plusMinusQuiz','algebraExplanation','algebraLevels','algebraQuiz','mathResult'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
+function showPercentExplanation(){hideMathViews();document.getElementById('percentExplanation').style.display='block'}
+function showMathLevels(){hideMathViews();document.getElementById('mathLevels').style.display='block'}
+function awardMathPoint(correctNow, runObj){if(!correctNow){runObj.value=0;return 0} runObj.value++; totalCorrect++; bestStreak=Math.max(bestStreak,runObj.value); const gain=10+Math.min((runObj.value-1)*2,10); points+=gain; update(); return gain}
+function startPercentQuiz(l){mathLevel=l;mathIndex=0;mathCorrect=0;mathEarned=0;mathRun=0;mathHistory=[];mathBusy=false;mathQuestions=[...percentQuestions[l]].sort(()=>Math.random()-.5);hideMathViews();document.getElementById('mathQuiz').style.display='block';renderMathQuestion()}
+function renderMathQuestion(){mathBusy=false; const btn=document.querySelector('#mathQuiz button.primary');if(btn)btn.disabled=false; const q=mathQuestions[mathIndex];document.getElementById('mathProgress').textContent=`Obtížnost ${mathLevel} • Otázka ${mathIndex+1}/${mathQuestions.length}`;document.getElementById('mathQuestion').textContent=q[0];document.getElementById('mathAnswer').value='';document.getElementById('mathFeedback').textContent='';document.getElementById('mathSkipCount').textContent=`(${inventory.skip||0})`;document.getElementById('mathAnswer').focus()}
+function submitMathAnswer(){if(mathBusy)return;const input=document.getElementById('mathAnswer');const u=input.value.trim().replace(/\s/g,'').replace(',','.');if(!u){document.getElementById('mathFeedback').textContent='⚠️ Zadej nejdřív odpověď.';return;}mathBusy=true;const btn=document.querySelector('#mathQuiz button.primary');if(btn)btn.disabled=true;recordExercise();const expected=mathQuestions[mathIndex][1];const ok=u===expected;let gain=0;if(ok){mathCorrect++;gain=awardMathPoint(true,{get value(){return mathRun},set value(v){mathRun=v}});mathEarned+=gain;document.getElementById('mathFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{mathRun=0;document.getElementById('mathFeedback').textContent=`❌ Špatně. Správný výsledek je ${expected}.`}mathHistory.push([mathQuestions[mathIndex][0],u,expected,ok,gain]);mathIndex++;setTimeout(()=>{if(mathIndex<mathQuestions.length)renderMathQuestion();else finish()},550)}
+function showPlusMinusLevels(){hideMathViews();document.getElementById('plusMinusLevels').style.display='block'}
+const algebraQuestions={1:[['Když x = 3, kolik je x + 5?','8'],['Když a = 7, kolik je a - 2?','5'],['Když x = 4, kolik je 2x?','8'],['Zjednoduš: 3x + 2x. Kolik je koeficient u x?','5'],['Když y = 6, kolik je y + y?','12']],2:[['Když x = 5, kolik je 3x + 2?','17'],['Když a = 4, kolik je 2a + 7?','15'],['Zjednoduš: 7x - 3x. Koeficient u x?','4'],['Když x = 6, kolik je 2(x + 3)?','18'],['Když y = 10, kolik je 3y - 8?','22']],3:[['Když x = 8, kolik je 4x - 6?','26'],['Když a = 7, kolik je 3(a + 2)?','27'],['Zjednoduš: 5x + 3x - 2x. Koeficient u x?','6'],['Když x = 9, kolik je 2x + 3(x - 1)?','42'],['Když a = 6, kolik je 4(a - 2) + 3?','19']]};
+let algebraQuestionsRun=[],algebraIndex=0,algebraCorrect=0,algebraEarned=0,algebraRun=0,algebraHistory=[],algebraLevel=1,algebraBusy=false;
+function showAlgebraExplanation(){hideMathViews();document.getElementById('algebraExplanation').style.display='block'}
+function showAlgebraLevels(){hideMathViews();document.getElementById('algebraLevels').style.display='block'}
+function startAlgebra(level=1){algebraBusy=false;algebraLevel=level;algebraIndex=0;algebraCorrect=0;algebraEarned=0;algebraRun=0;algebraHistory=[];algebraQuestionsRun=[...algebraQuestions[level]].sort(()=>Math.random()-.5);hideMathViews();document.getElementById('algebraQuiz').style.display='block';renderAlgebra()}
+function renderAlgebra(){algebraBusy=false; const btn=document.querySelector('#algebraQuiz button.primary');if(btn)btn.disabled=false; const q=algebraQuestionsRun[algebraIndex];document.getElementById('algebraProgress').textContent=`Obtížnost ${algebraLevel} • Otázka ${algebraIndex+1}/${algebraQuestionsRun.length}`;document.getElementById('algebraQuestion').textContent=q[0];document.getElementById('algebraAnswer').value='';document.getElementById('algebraFeedback').textContent='';document.getElementById('algebraSkipCount').textContent=`(${inventory.skip||0})`;document.getElementById('algebraAnswer').focus()}
+function submitAlgebra(){if(algebraBusy)return;const input=document.getElementById('algebraAnswer');const u=input.value.trim().replace(/\s/g,'').replace(',','.');if(!u){document.getElementById('algebraFeedback').textContent='⚠️ Zadej nejdřív odpověď.';return;}algebraBusy=true;const btn=document.querySelector('#algebraQuiz button.primary');if(btn)btn.disabled=true;recordExercise();const expected=algebraQuestionsRun[algebraIndex][1];const ok=u===expected;let gain=0;if(ok){algebraCorrect++;algebraRun++;totalCorrect++;bestStreak=Math.max(bestStreak,algebraRun);gain=10+Math.min((algebraRun-1)*2,10);points+=gain;dailyPoints+=gain;algebraEarned+=gain;update();document.getElementById('algebraFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{algebraRun=0;document.getElementById('algebraFeedback').textContent=`❌ Špatně. Správný výsledek je ${expected}.`}algebraHistory.push([algebraQuestionsRun[algebraIndex][0],u,expected,ok,gain]);algebraIndex++;setTimeout(()=>{if(algebraIndex<algebraQuestionsRun.length)renderAlgebra();else finishAlgebra()},550)}
+function finishAlgebra(){hideMathViews();document.getElementById('mathResult').style.display='block';const pct=Math.round(algebraCorrect/algebraQuestionsRun.length*100);document.getElementById('mathResultText').textContent=`${algebraCorrect}/${algebraQuestionsRun.length} • ${pct} %`;document.getElementById('mathPointsText').textContent=`⭐ Získal/a jsi ${algebraEarned} bodů`;document.getElementById('mathHistory').innerHTML='<h3>Výsledky</h3>'+algebraHistory.map(r=>`<div>${r[3]?'✅':'❌'} ${r[0]} <b>${r[3]?`+${r[4]} bodů`:`Správně: ${r[2]}`}</b></div>`).join('')}
+
+function startPlusMinus(level=1){plusMinusBusy=false;plusMinusLevel=level;plusMinusQuestions=[];let max=level===1?50:level===2?200:1000;for(let i=0;i<10;i++){let a=Math.floor(Math.random()*max)+1,b=Math.floor(Math.random()*max)+1,plus=Math.random()<.5;if(!plus&&b>a){let t=a;a=b;b=t}plusMinusQuestions.push([`${a} ${plus?'+':'−'} ${b} = ?`,plus?a+b:a-b])}plusMinusIndex=0;plusMinusCorrect=0;plusMinusEarned=0;plusMinusRun=0;plusMinusHistory=[];hideMathViews();document.getElementById('plusMinusQuiz').style.display='block';renderPlusMinus()}
+function renderPlusMinus(){plusMinusBusy=false; const btn=document.querySelector('#plusMinusQuiz button.primary');if(btn)btn.disabled=false; const q=plusMinusQuestions[plusMinusIndex];document.getElementById('plusMinusProgress').textContent=`Obtížnost ${plusMinusLevel} • Otázka ${plusMinusIndex+1}/${plusMinusQuestions.length}`;document.getElementById('plusMinusQuestion').textContent=q[0];document.getElementById('plusMinusAnswer').value='';document.getElementById('plusMinusFeedback').textContent='';document.getElementById('plusSkipCount').textContent=`(${inventory.skip||0})`;document.getElementById('plusMinusAnswer').focus()}
+function submitPlusMinus(){if(plusMinusBusy)return;const input=document.getElementById('plusMinusAnswer');const u=input.value.trim().replace(/\s/g,'');if(!u){document.getElementById('plusMinusFeedback').textContent='⚠️ Zadej nejdřív odpověď.';return;}plusMinusBusy=true;const btn=document.querySelector('#plusMinusQuiz button.primary');if(btn)btn.disabled=true;recordExercise();const expected=String(plusMinusQuestions[plusMinusIndex][1]);const ok=u===expected;let gain=0;if(ok){plusMinusCorrect++;plusMinusRun++;totalCorrect++;bestStreak=Math.max(bestStreak,plusMinusRun);gain=10+Math.min((plusMinusRun-1)*2,10);points+=gain;dailyPoints+=gain;plusMinusEarned+=gain;update();document.getElementById('plusMinusFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{plusMinusRun=0;document.getElementById('plusMinusFeedback').textContent=`❌ Špatně. Správný výsledek je ${expected}.`}plusMinusHistory.push([plusMinusQuestions[plusMinusIndex][0],u,expected,ok,gain]);plusMinusIndex++;setTimeout(()=>{if(plusMinusIndex<plusMinusQuestions.length)renderPlusMinus();else finishPlusMinus()},550)}
+function skipMathQuestion(type){if((inventory.skip||0)<=0){document.getElementById(type==='percent'?'mathFeedback':type==='plusminus'?'plusMinusFeedback':'algebraFeedback').textContent='❌ Nemáš žádné přeskočení otázky. Kup si ho v obchodě za 50 ⭐.';return;} inventory.skip--; update(); if(type==='percent'){mathHistory.push([mathQuestions[mathIndex][0],'—','Přeskočeno',false,0]);mathIndex++;if(mathIndex<mathQuestions.length)renderMathQuestion();else finish();}else if(type==='plusminus'){plusMinusHistory.push([plusMinusQuestions[plusMinusIndex][0],'—','Přeskočeno',false,0]);plusMinusIndex++;if(plusMinusIndex<plusMinusQuestions.length)renderPlusMinus();else finishPlusMinus();}else{algebraHistory.push([algebraQuestionsRun[algebraIndex][0],'—','Přeskočeno',false,0]);algebraIndex++;if(algebraIndex<algebraQuestionsRun.length)renderAlgebra();else finishAlgebra();}}
+function finish(){hideMathViews();document.getElementById('mathResult').style.display='block';const pct=Math.round(mathCorrect/mathQuestions.length*100);document.getElementById('mathResultText').textContent=`${mathCorrect}/${mathQuestions.length} • ${pct} %`;document.getElementById('mathPointsText').textContent=`⭐ Získal/a jsi ${mathEarned} bodů`;document.getElementById('mathHistory').innerHTML='<h3>Výsledky</h3>'+mathHistory.map(r=>`<div>${r[3]?'✅':'❌'} ${r[0]} <b>${r[3]?`+${r[4]} bodů`:`Správně: ${r[2]}`}</b></div>`).join('')}
+function finishPlusMinus(){hideMathViews();document.getElementById('mathResult').style.display='block';const pct=Math.round(plusMinusCorrect/plusMinusQuestions.length*100);document.getElementById('mathResultText').textContent=`${plusMinusCorrect}/${plusMinusQuestions.length} • ${pct} %`;document.getElementById('mathPointsText').textContent=`⭐ Získal/a jsi ${plusMinusEarned} bodů`;document.getElementById('mathHistory').innerHTML='<h3>Výsledky</h3>'+plusMinusHistory.map(r=>`<div>${r[3]?'✅':'❌'} ${r[0]} <b>${r[3]?`+${r[4]} bodů`:`Správně: ${r[2]}`}</b></div>`).join('')}
+document.getElementById('mathAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')submitMathAnswer()});document.getElementById('plusMinusAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')submitPlusMinus()});document.getElementById('algebraAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')submitAlgebra()});
+function openMath(){hideAll();const m=document.getElementById('mathScreen');m.classList.remove('hidden');m.style.display='block';hideMathViews();document.getElementById('mathHome').style.display='block'}
+function mathBack(){goHome()}
+
+
+/* ANGLIČTINA */
+const englishTenseData=[
+ {name:'Present Simple',form:'subject + základní tvar slovesa (he/she/it + -s)',use:'zvyky, pravidla, fakta a obecné pravdy',example:'Ice melts when the temperature rises above 0°C.'},
+ {name:'Present Continuous',form:'am / is / are + sloveso-ing',use:'děj, který probíhá právě teď nebo kolem současnosti',example:'The students are studying for their English test.'},
+ {name:'Past Simple',form:'2. tvar slovesa / did + základní tvar',use:'ukončený děj v minulosti',example:'We went camping every summer when we were children.'},
+ {name:'Past Continuous',form:'was / were + sloveso-ing',use:'děj probíhající v určitém okamžiku v minulosti',example:'At 7:30 yesterday, I was cooking dinner.'},
+ {name:'Present Perfect',form:'have / has + 3. tvar slovesa',use:'minulý děj spojený se současností, zkušenost nebo děj do současnosti',example:'We haven\'t finished the project yet.'},
+ {name:'Present Perfect Continuous',form:'have / has been + sloveso-ing',use:'děj, který začal v minulosti a trvá nebo právě skončil; důraz na délku',example:'She has been working on the project since September.'},
+ {name:'Past Perfect',form:'had + 3. tvar slovesa',use:'děj, který se stal dříve než jiný minulý děj',example:'By the time we arrived, the film had already begun.'},
+ {name:'Past Perfect Continuous',form:'had been + sloveso-ing',use:'delší děj, který probíhal před jiným minulým dějem',example:'He had been playing football for five years before he joined the team.'},
+ {name:'Future with will',form:'will + základní tvar slovesa',use:'předpověď, rozhodnutí nebo děj v budoucnosti',example:'The trip will be cancelled if the weather is bad.'}
+];
+const englishTenseQuestions={
+1:[
+ ['Right now, the students ___ for their English test.',['studied','are studying','study','will study'],1],
+ ['Ice ___ when the temperature rises above 0°C.',['melts','melted','is melting','was melting'],0],
+ ['At 7:30 yesterday evening, I ___ dinner with my family.',['cooked','was cooking','have cooked','will cook'],1],
+ ['Look! The dog ___ after the ball.',['runs','ran','is running','has run'],2],
+ ['Our biology lesson ___ on Monday.',['started','will start','starts','was starting'],2],
+ ['We ___ the project yet, so we cannot submit it.',['finished','didn\'t finish','haven\'t finished','aren\'t finishing'],2],
+ ['My brother usually ___ to school by bus.',['go','goes','is going','went'],1],
+ ['They ___ TV when the phone rang.',['watched','were watching','have watched','will watch'],1],
+ ['I ___ this film twice.',['saw','was seeing','have seen','had seen'],2],
+ ['If the weather is bad tomorrow, the school trip ___.',['cancels','cancelled','will be cancelled','has cancelled'],2]
+],
+2:[
+ ['She ___ in Madrid before she moved to Barcelona.',['has lived','lives','had lived','is living'],2],
+ ['How long ___ you ___ your current phone?',['did / have','have / had','are / having','had / have'],1],
+ ['When I opened the door, my little brother ___ a computer game.',['played','was playing','has played','will play'],1],
+ ['She ___ on her final project since the beginning of September.',['worked','has been working','had worked','is worked'],1],
+ ['By the time we got to the cinema, the film ___.',['already begins','has already begun','had already begun','was already begin'],2],
+ ['My grandfather ___ as a doctor for more than forty years before he retired.',['has worked','had worked','is working','will work'],1],
+ ['Be quiet! The children ___ an important test next door.',['take','took','are taking','had taken'],2],
+ ['He ___ football for five years before he joined the school team.',['played','has played','had been playing','is playing'],2],
+ ['I ___ my homework when my friend called me.',['did','was doing','have done','had do'],1],
+ ['We ___ already ___ dinner when our guests arrived.',['have / eaten','were / eating','had / eaten','did / eat'],2]
+],
+3:[
+ ['When I arrived home, my sister ___ dinner already.',['made','was making','had made','has made'],2],
+ ['I was tired because I ___ all afternoon.',['studied','have studied','had been studying','am studying'],2],
+ ['He ___ the wallet before he realized it was missing.',['had lost','has lost','was losing','loses'],0],
+ ['She ___ in the library for two hours before the lesson started.',['has been reading','had been reading','was read','reads'],1],
+ ['We ___ for the bus when it suddenly started to rain.',['waited','were waiting','had waited','have waited'],1],
+ ['I ___ never ___ such a strange story before.',['have / heard','had / heard','was / hearing','did / hear'],1],
+ ['By the time the teacher came in, the students ___.',['sat down','were sitting down','had sat down','have sat down'],2],
+ ['The Earth ___ around the Sun.',['is orbiting','orbits','orbited','had orbited'],1],
+ ['He ___ in London for three years, and he still lives there.',['lived','was living','has lived','had lived'],2],
+ ['At this time tomorrow, we ___ to Scotland.',['travelled','will be travelling','had travelled','have travelled'],1]
+]};
+const englishPastQuestions=[
+ ['By the time I arrived, my friends ___ (leave).','had left'],
+ ['She was nervous because she ___ never ___ (fly) before.','had never flown'],
+ ['When we got home, Mum ___ already ___ (make) dinner.','had already made'],
+ ['He ___ (finish) the project before the teacher asked for it.','had finished'],
+ ['I couldn\'t open the door because I ___ (forget) my key.','had forgotten'],
+ ['The film ___ already ___ (start) when we entered the cinema.','had already started'],
+ ['They were tired because they ___ (walk) for hours before they reached the village.','had been walking'],
+ ['She ___ not ___ (see) the message before the meeting.','had not seen'],
+ ['___ you ___ (eat) before you came to the party?','Had you eaten'],
+ ['They ___ already ___ (go) home when I called.','had already gone']
+];
+const englishWalletQuestions=[
+ ['arrived','When I ___ at the station, I noticed that something was wrong.','arrived'],
+ ['had left','I ___ my wallet at home without realizing it.','had left'],
+ ['was waiting','While I ___ for my brother, a woman noticed a wallet near a bench.','was waiting'],
+ ['found','She ___ it beside the bench.','found'],
+ ['had picked','She explained that she ___ it up because it was lying in the middle of the path.','had picked'],
+ ['had seen','She said she ___ someone drop it a few minutes earlier.','had seen'],
+ ['thanked','I ___ her and checked the wallet carefully.','thanked'],
+ ['belonged','Everything inside ___ to me.','belonged'],
+ ['had not noticed','I ___ that it was missing until I reached the station.','had not noticed'],
+ ['went','After that, I ___ home and put the wallet in a safe place.','went']
+];
+const irregularVerbs=[
+ ['be','was / were','been'],['become','became','become'],['begin','began','begun'],['break','broke','broken'],['bring','brought','brought'],['build','built','built'],['buy','bought','bought'],['choose','chose','chosen'],['come','came','come'],['do','did','done'],['drink','drank','drunk'],['drive','drove','driven'],['eat','ate','eaten'],['fall','fell','fallen'],['feel','felt','felt'],['find','found','found'],['fly','flew','flown'],['forget','forgot','forgotten'],['get','got','got / gotten'],['give','gave','given'],['go','went','gone'],['grow','grew','grown'],['have','had','had'],['hear','heard','heard'],['keep','kept','kept'],['know','knew','known'],['leave','left','left'],['lose','lost','lost'],['make','made','made'],['meet','met','met'],['pay','paid','paid'],['put','put','put'],['read','read','read'],['ride','rode','ridden'],['run','ran','run'],['say','said','said'],['see','saw','seen'],['send','sent','sent'],['sing','sang','sung'],['sit','sat','sat'],['sleep','slept','slept'],['speak','spoke','spoken'],['spend','spent','spent'],['stand','stood','stood'],['swim','swam','swum'],['take','took','taken'],['teach','taught','taught'],['tell','told','told'],['think','thought','thought'],['understand','understood','understood'],['wear','wore','worn'],['win','won','won'],['write','wrote','written']
+];
+let englishMode='',englishQs=[],englishIndex=0,englishCorrect=0,englishEarned=0,englishRun=0;
+let englishPastIndex=0,englishPastCorrect=0,englishPastEarned=0,englishPastRun=0;
+let englishWalletIndex=0,englishWalletCorrect=0,englishWalletEarned=0,englishWalletRun=0;
+let englishIrregularQs=[],englishIrregularIndex=0,englishIrregularCorrect=0,englishIrregularEarned=0,englishIrregularRun=0;
+function openEnglish(){hideAll();document.getElementById('englishScreen').classList.remove('hidden');hideEnglishViews();document.getElementById('englishHome').style.display='grid';update()}
+function hideEnglishViews(){['englishHome','englishTenses','englishPastPerfect','englishLevels','englishQuiz','englishPastQuiz','englishWallet','englishIrregulars','englishIrregularQuiz','englishResult'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'})}
+function showEnglishTenses(){hideEnglishViews();document.getElementById('englishTenses').style.display='block';document.getElementById('englishTenses').innerHTML='<button class="secondary back" onclick="openEnglish()">← Angličtina</button><h2>📘 English Grammar – Verb Tenses</h2><p class="muted">Tady je přehled časů, které se objevují v úlohách. Nejdřív si vždy zkus najít signální slovo a hlavně význam věty.</p>'+englishTenseData.map(t=>`<div class="english-note"><h3>${t.name}</h3><p><b>Tvar:</b> ${t.form}</p><p><b>Kdy:</b> ${t.use}</p><p class="english-example">Příklad: ${t.example}</p></div>`).join('')+'<button class="primary" onclick="showEnglishLevels()">🎯 Procvičovat všechny časy</button>'}
+function showEnglishPastPerfect(){
+ hideEnglishViews();
+ document.getElementById('englishPastPerfect').style.display='block';
+ document.getElementById('englishPastPerfect').innerHTML=`
+ <button class="secondary back" onclick="openEnglish()">← Angličtina</button>
+ <h2>⏳ Past Perfect</h2>
+ <div class="english-note"><b>Hlavní pravidlo:</b> Když mluvíme o dvou dějích v minulosti, Past Perfect většinou označuje ten, který se stal <b>dříve</b>.</div>
+ <div class="english-forms">
+   <div class="english-form-card"><h3>Affirmative</h3><p><b>Subject + had + V3</b></p><p>She <b>had left</b> before I arrived.</p></div>
+   <div class="english-form-card"><h3>Negative</h3><p><b>Subject + had not + V3</b></p><p>She <b>hadn't left</b> yet.</p></div>
+   <div class="english-form-card"><h3>Question</h3><p><b>Had + subject + V3?</b></p><p><b>Had</b> she <b>left</b> before you arrived?</p></div>
+   <div class="english-form-card"><h3>Short answer</h3><p>Yes, she <b>had</b>. / No, she <b>hadn't</b>.</p></div>
+ </div>
+ <h3>📋 Past Perfect – rychlá tabulka</h3>
+ <table class="english-table"><tr><th>Typ</th><th>Vzorec</th><th>Příklad</th></tr>
+ <tr><td>kladná věta</td><td>subject + had + V3</td><td>They had gone.</td></tr>
+ <tr><td>zápor</td><td>subject + had not + V3</td><td>They had not gone.</td></tr>
+ <tr><td>otázka</td><td>Had + subject + V3?</td><td>Had they gone?</td></tr>
+ <tr><td>krátká odpověď</td><td>Yes, ... had. / No, ... hadn't.</td><td>Yes, they had.</td></tr></table>
+ <div class="english-note"><b>Pořadí:</b> When I came home, my mum <b>had made</b> dinner. Nejdřív udělala večeři → <b>had made</b>. Potom jsem přišel domů → <b>came</b>.<br><br>Pokud děje jdou jednoduše za sebou, často stačí Past Simple: <b>I came home and did my homework.</b></div>
+ <button class="primary" onclick="startEnglishPast()">🎯 Procvičovat Past Perfect</button>`;
+}
+function showEnglishLevels(){hideEnglishViews();document.getElementById('englishLevels').style.display='block'}
+function startEnglishTensesQuiz(level){englishMode='tenses';englishQs=[...englishTenseQuestions[level]].sort(()=>Math.random()-.5);englishIndex=0;englishCorrect=0;englishEarned=0;englishRun=0;run=0;hideEnglishViews();document.getElementById('englishQuiz').style.display='block';document.getElementById('englishQuizLabel').textContent=`🎯 Verb Tenses • obtížnost ${level}`;renderEnglishQuestion()}
+function renderEnglishQuestion(){const q=englishQs[englishIndex];document.getElementById('englishQuizProgress').textContent=`Otázka ${englishIndex+1}/${englishQs.length}`;document.getElementById('englishBar').style.width=`${englishIndex/englishQs.length*100}%`;document.getElementById('englishQuestion').textContent=q[0];document.getElementById('englishChoices').innerHTML=q[1].map((x,i)=>`<button class="secondary" onclick="answerEnglish(${i})">${String.fromCharCode(65+i)}) ${x}</button>`).join('');document.getElementById('englishFeedback').textContent=''}
+function answerEnglish(i){const q=englishQs[englishIndex];recordExercise();const ok=i===q[2];let gain=0;if(ok){englishCorrect++;englishRun++;run=englishRun;totalCorrect++;bestStreak=Math.max(bestStreak,englishRun);gain=10+Math.min((englishRun-1)*2,10);points+=gain;dailyPoints+=gain;englishEarned+=gain;document.getElementById('englishFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{englishRun=0;run=0;document.getElementById('englishFeedback').textContent=`❌ Špatně. Správně je ${String.fromCharCode(65+q[2])}) ${q[1][q[2]]}`}syncTrophies();update();document.querySelectorAll('#englishChoices button').forEach(b=>b.disabled=true);setTimeout(()=>{englishIndex++;if(englishIndex<englishQs.length)renderEnglishQuestion();else finishEnglish()},550)}
+function finishEnglish(){hideEnglishViews();document.getElementById('englishResult').style.display='block';document.getElementById('englishResultText').textContent=`${englishCorrect}/${englishQs.length} správně • ${Math.round(englishCorrect/englishQs.length*100)} %`;document.getElementById('englishPointsText').textContent=`⭐ Získal/a jsi ${englishEarned} bodů • Celkem ${points} bodů`;update()}
+function startEnglishPast(){englishPastIndex=0;englishPastCorrect=0;englishPastEarned=0;englishPastRun=0;run=0;hideEnglishViews();document.getElementById('englishPastQuiz').style.display='block';renderEnglishPast()}
+function renderEnglishPast(){const q=englishPastQuestions[englishPastIndex];document.getElementById('englishPastProgress').textContent=`Otázka ${englishPastIndex+1}/${englishPastQuestions.length}`;document.getElementById('englishPastBar').style.width=`${englishPastIndex/englishPastQuestions.length*100}%`;document.getElementById('englishPastQuestion').textContent=q[0];document.getElementById('englishPastAnswer').value='';document.getElementById('englishPastFeedback').textContent='';document.getElementById('englishPastAnswer').focus()}
+function submitEnglishPast(){const input=document.getElementById('englishPastAnswer');const u=normEnglish(input.value);if(!u)return;recordExercise();const expected=englishPastQuestions[englishPastIndex][1];const ok=englishMatches(u,expected);let gain=0;if(ok){englishPastCorrect++;englishPastRun++;run=englishPastRun;totalCorrect++;bestStreak=Math.max(bestStreak,englishPastRun);gain=10+Math.min((englishPastRun-1)*2,10);points+=gain;dailyPoints+=gain;englishPastEarned+=gain;document.getElementById('englishPastFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{englishPastRun=0;run=0;document.getElementById('englishPastFeedback').textContent=`❌ Špatně. Správně: ${englishPastQuestions[englishPastIndex][1]}`}syncTrophies();update();englishPastIndex++;setTimeout(()=>{if(englishPastIndex<englishPastQuestions.length)renderEnglishPast();else finishEnglishPast()},550)}
+function finishEnglishPast(){hideEnglishViews();document.getElementById('englishResult').style.display='block';document.getElementById('englishResultText').textContent=`${englishPastCorrect}/${englishPastQuestions.length} správně • ${Math.round(englishPastCorrect/englishPastQuestions.length*100)} %`;document.getElementById('englishPointsText').textContent=`⭐ Získal/a jsi ${englishPastEarned} bodů • Celkem ${points} bodů`;update()}
+function startEnglishWallet(){englishWalletIndex=0;englishWalletCorrect=0;englishWalletEarned=0;englishWalletRun=0;run=0;hideEnglishViews();document.getElementById('englishWallet').style.display='block';renderEnglishWallet()}
+function renderEnglishWallet(){const q=englishWalletQuestions[englishWalletIndex];document.getElementById('englishWalletText').innerHTML=`<p class="english-story-line">${q[1]}</p><p class="mini">Doplň správný tvar slovesa do věty.</p>`;document.getElementById('englishWalletQuestion').textContent='';document.getElementById('englishWalletProgress').textContent=`Otázka ${englishWalletIndex+1}/${englishWalletQuestions.length}`;document.getElementById('englishWalletAnswer').value='';document.getElementById('englishWalletFeedback').textContent='';document.getElementById('englishWalletAnswer').focus()}
+function submitEnglishWallet(){const input=document.getElementById('englishWalletAnswer');const u=normEnglish(input.value);if(!u)return;recordExercise();const expected=englishWalletQuestions[englishWalletIndex][2];const ok=englishMatches(u,expected);let gain=0;if(ok){englishWalletCorrect++;englishWalletRun++;run=englishWalletRun;totalCorrect++;bestStreak=Math.max(bestStreak,englishWalletRun);gain=10+Math.min((englishWalletRun-1)*2,10);points+=gain;dailyPoints+=gain;englishWalletEarned+=gain;document.getElementById('englishWalletFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{englishWalletRun=0;run=0;document.getElementById('englishWalletFeedback').textContent=`❌ Špatně. Správně: ${englishWalletQuestions[englishWalletIndex][2]}`}syncTrophies();update();englishWalletIndex++;setTimeout(()=>{if(englishWalletIndex<englishWalletQuestions.length)renderEnglishWallet();else finishEnglishWallet()},550)}
+function finishEnglishWallet(){hideEnglishViews();document.getElementById('englishResult').style.display='block';document.getElementById('englishResultText').textContent=`${englishWalletCorrect}/${englishWalletQuestions.length} správně • ${Math.round(englishWalletCorrect/englishWalletQuestions.length*100)} %`;document.getElementById('englishPointsText').textContent=`⭐ Získal/a jsi ${englishWalletEarned} bodů • Celkem ${points} bodů`;update()}
+function normEnglish(s){return String(s).trim().toLowerCase().replace(/[.,!?;:]+$/g,'').replace(/\s+/g,' ').replaceAll('’',"'").replaceAll("hadn't","had not").replaceAll("hasn't","has not").replaceAll("haven't","have not").replaceAll("didn't","did not").replaceAll("wasn't","was not").replaceAll("weren't","were not")}; function englishMatches(user,expected){const u=normEnglish(user);return String(expected).split('/').some(x=>u===normEnglish(x))}
+function showEnglishIrregulars(){hideEnglishViews();const el=document.getElementById('englishIrregulars');el.style.display='block';el.innerHTML='<button class="secondary back" onclick="openEnglish()">← Angličtina</button><h2>📚 Irregular Verbs</h2><p class="muted">Infinitive = základní tvar • Past Simple = 2. tvar • Past Participle = 3. tvar</p><div class="english-irregular-wrap"><table class="english-table english-irregular-table"><tr><th>Infinitive</th><th>Past Simple</th><th>Past Participle</th></tr>'+irregularVerbs.map(v=>`<tr><td>${v[0]}</td><td>${v[1]}</td><td>${v[2]}</td></tr>`).join('')+'</table></div><button class="primary" style="margin-top:16px" onclick="startEnglishIrregular()">🎯 Procvičovat slovesa</button>'}
+function startEnglishIrregular(){englishIrregularQs=[...irregularVerbs].sort(()=>Math.random()-.5).slice(0,10).map(v=>{const ask=Math.random()<.5?1:2;return [v,ask]});englishIrregularIndex=0;englishIrregularCorrect=0;englishIrregularEarned=0;englishIrregularRun=0;run=0;hideEnglishViews();document.getElementById('englishIrregularQuiz').style.display='block';renderEnglishIrregular()}
+function renderEnglishIrregular(){const q=englishIrregularQs[englishIrregularIndex],v=q[0],ask=q[1];document.getElementById('englishIrregularProgress').textContent=`Otázka ${englishIrregularIndex+1}/${englishIrregularQs.length}`;document.getElementById('englishIrregularBar').style.width=`${englishIrregularIndex/englishIrregularQs.length*100}%`;document.getElementById('englishIrregularQuestion').textContent=ask===1?`Doplň Past Simple: ${v[0]} → ?`:`Doplň Past Participle: ${v[0]} → ?`;document.getElementById('englishIrregularAnswer').value='';document.getElementById('englishIrregularFeedback').textContent='';document.getElementById('englishIrregularAnswer').focus()}
+function submitEnglishIrregular(){const input=document.getElementById('englishIrregularAnswer');const u=normEnglish(input.value);if(!u)return;recordExercise();const q=englishIrregularQs[englishIrregularIndex],expected=q[0][q[1]];const ok=englishMatches(u,expected);let gain=0;if(ok){englishIrregularCorrect++;englishIrregularRun++;run=englishIrregularRun;totalCorrect++;bestStreak=Math.max(bestStreak,englishIrregularRun);gain=10+Math.min((englishIrregularRun-1)*2,10);points+=gain;dailyPoints+=gain;englishIrregularEarned+=gain;document.getElementById('englishIrregularFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{englishIrregularRun=0;run=0;document.getElementById('englishIrregularFeedback').textContent=`❌ Špatně. Správně: ${q[0][q[1]]}`}syncTrophies();update();englishIrregularIndex++;setTimeout(()=>{if(englishIrregularIndex<englishIrregularQs.length)renderEnglishIrregular();else finishEnglishIrregular()},550)}
+function finishEnglishIrregular(){hideEnglishViews();document.getElementById('englishResult').style.display='block';document.getElementById('englishResultText').textContent=`${englishIrregularCorrect}/${englishIrregularQs.length} správně • ${Math.round(englishIrregularCorrect/englishIrregularQs.length*100)} %`;document.getElementById('englishPointsText').textContent=`⭐ Získal/a jsi ${englishIrregularEarned} bodů • Celkem ${points} bodů`;update()}
+document.getElementById('englishPastAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')submitEnglishPast()});document.getElementById('englishWalletAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')submitEnglishWallet()});document.getElementById('englishIrregularAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')submitEnglishIrregular()});
+
+/* DĚJEPIS */
+const historyData={
+ industry:{title:'🏭 Průmyslová revoluce',html:`<div class="lesson"><h3>Co byla průmyslová revoluce?</h3><p>Průmyslová revoluce byla dlouhodobá proměna výroby a společnosti, která začala v 18. století především ve Velké Británii a během 19. století se šířila Evropou. Ruční práci postupně doplňovaly a nahrazovaly stroje a vznikaly továrny.</p><h3>Co ji umožnilo?</h3><p>Významný byl rozvoj techniky, využití uhlí a železa a zdokonalení parního stroje. Pára se uplatnila ve výrobě i dopravě.</p><h3>Co se změnilo?</h3><p>Rozvíjely se továrny, železnice a města. Lidé se stěhovali za prací do průmyslových oblastí a vznikala početná dělnická třída. Pracovní podmínky byly zpočátku často velmi náročné.</p><h3>V českých zemích</h3><p>Industrializace se výrazně rozvíjela v 19. století. Důležitou roli hrálo uhlí, hutnictví, textilní průmysl a železnice.</p></div><button class="primary" onclick="startHistoryQuiz('industry')">🎯 Procvičovat</button>`},
+ '1848':{title:'🇪🇺 Revoluce 1848',html:`<div class="lesson"><h3>Kdy a proč?</h3><p>Revoluční vlna vypukla v roce <b>1848</b> a zasáhla velkou část Evropy. Lidé požadovali například ústavní změny, občanské svobody, politická práva a v některých zemích také národní sebeurčení.</p><h3>Francie</h3><p>V únoru 1848 padla červencová monarchie a vznikla Druhá republika.</p><h3>Habsburská monarchie a české země</h3><p>V březnu 1848 se začaly prosazovat politické požadavky a v Praze proběhly v červnu tzv. svatodušní bouře. Revoluce byla potlačena, ale rok 1848 přinesl významné změny. V monarchii bylo zrušeno poddanství a robota a otevřela se cesta k dalším ústavním a občanským změnám.</p><h3>Proč je rok 1848 důležitý?</h3><p>Ukázal sílu moderních politických a národních hnutí a stal se významným mezníkem evropských dějin.</p></div><button class="primary" onclick="startHistoryQuiz('1848')">🎯 Procvičovat</button>`},
+ revival:{title:'🇨🇿 Národní obrození',html:`<div class="lesson"><h3>Co bylo národní obrození?</h3><p>Národní obrození bylo kulturní a společenské hnutí, které od konce 18. století usilovalo o obnovu českého jazyka, literatury, kultury a národního vědomí. Probíhalo hlavně v českých zemích v prostředí habsburské monarchie.</p><h3>Proč vzniklo?</h3><p>Čeština měla ve veřejném životě a ve vzdělaných vrstvách slabší postavení než němčina. Obrozenci proto podporovali český jazyk, vzdělávání, knihy, vědu a zájem o české dějiny.</p><h3>Důležité osobnosti</h3><p><b>Josef Dobrovský</b> se věnoval českému jazyku a jeho výzkumu. <b>Josef Jungmann</b> podporoval českou literaturu a vytvořil rozsáhlý česko-německý slovník. <b>František Palacký</b> se významně věnoval českým dějinám a politickému životu.</p><h3>Co přineslo?</h3><p>Rozvoj českého školství, literatury, divadla, vědy a novin. Posilovalo se vědomí, že Češi tvoří vlastní národní společenství. Národní obrození tak pomohlo vytvořit kulturní základ moderního českého národa.</p><h3>Zapamatuj si 🧠</h3><p><b>Národní obrození = jazyk + kultura + vzdělání + národní vědomí.</b></p></div><button class="primary" onclick="startHistoryQuiz('revival')">🎯 Procvičovat</button>`},
+ ideologies:{title:'💡 Konzervatismus, liberalismus a nacionalismus',html:`<div class="lesson"><h3>🛡️ Konzervatismus</h3><p>Zdůrazňuje kontinuitu, tradice, řád a opatrné změny. Konzervativci obvykle odmítali rychlé převraty a dávali přednost postupným reformám.</p><h3>🕊️ Liberalismus</h3><p>Zdůrazňuje osobní svobody, občanská práva, rovnost před zákonem a ústavní vládu. V 19. století byl spojen také s požadavky na politické zastoupení a hospodářskou svobodu.</p><h3>🏳️ Nacionalismus</h3><p>Zdůrazňuje význam národa a jeho společné identity. V 19. století podporoval snahy některých národů o kulturní, politické nebo státní sebeurčení.</p><h3>Zapamatuj si</h3><p><b>Konzervatismus = tradice a řád</b> • <b>Liberalismus = svobody a práva</b> • <b>Nacionalismus = národ a jeho identita</b></p></div><button class="primary" onclick="startHistoryQuiz('ideologies')">🎯 Procvičovat</button>`}
+};
+const historyQuestions={
+ industry:[['Kde začala průmyslová revoluce nejdříve?',['Velká Británie','Francie','Rusko','Španělsko'],0],['Který vynález výrazně souvisel s průmyslovou revolucí?',['Parní stroj','Kompas','Tiskárna ve starověku','Luk'],0],['Co vznikalo s rozvojem tovární výroby?',['Dělnická třída','Rytířské řády','Feudální hrady','Městské státy'],0],['Jaká doprava se v 19. století rychle rozvíjela díky průmyslu?',['Železnice','Velbloudí karavany','Veslové lodě','Psí spřežení'],0],['Co je industrializace?',['Rozvoj průmyslové výroby','Návrat k lovu a sběru','Rozpad měst','Zánik strojů'],0],['Která surovina byla důležitá pro parní stroje?',['Uhlí','Sůl','Mramor','Skořice'],0],['Co se dělo s mnoha městy?',['Rostla a přibývalo obyvatel','Úplně zanikala','Vracela se k zemědělství','Byla opuštěna'],0],['Co bylo typické pro první tovární práci?',['Dlouhá a náročná práce','Jen práce o víkendech','Žádná pravidla výroby','Výhradně práce šlechty'],0]],
+ '1848':[['Ve kterém roce proběhla revoluční vlna v Evropě?',['1848','1789','1914','1815'],0],['Kde začala únorová revoluce roku 1848?',['Francie','Čechy','Rusko','Švédsko'],0],['Co požadovala mnohá revoluční hnutí?',['Občanské svobody a politická práva','Návrat k nevolnictví','Zákaz ústav','Zrušení škol'],0],['Jak se označují pražské události z června 1848?',['Svatodušní bouře','Sametová revoluce','Pražské jaro','Defenestrace'],0],['Co bylo v habsburské monarchii v roce 1848 zrušeno?',['Poddanství a robota','Železnice','Obce','Tisk'],0],['Který český historik a politik je spojen s rokem 1848?',['František Palacký','Jan Amos Komenský','Karel IV.','Antonín Dvořák'],0],['Co následovalo po potlačení pražského povstání?',['Revoluční hnutí byla vojensky potlačena','Vznik Československa','Konec monarchie','Vznik EU'],0],['Proč je rok 1848 důležitý?',['Urychlil moderní politický a společenský vývoj','Zastavil průmysl v Evropě','Zrušil všechny státy','Zahájil první světovou válku'],0]],
+ revival:[['Kdy začalo české národní obrození přibližně?',['Na konci 18. století','Ve 12. století','Po roce 1945','V 16. století'],0],['O co národní obrození především usilovalo?',['O obnovu českého jazyka a kultury','O zrušení českého jazyka','O návrat k feudalismu','O vznik Evropské unie'],0],['Která osobnost se zabývala českým jazykem a jeho výzkumem?',['Josef Dobrovský','Karel IV.','Jan Žižka','Tomáš Garrigue Masaryk'],0],['Kdo vytvořil významný česko-německý slovník?',['Josef Jungmann','František Palacký','Antonín Dvořák','Jan Amos Komenský'],0],['S čím je výrazně spojen František Palacký?',['Českými dějinami a politickým životem','Vynálezem parního stroje','Objevením Ameriky','Vedením husitského vojska'],0],['Proč bylo důležité podporovat český jazyk?',['Čeština měla ve veřejném životě slabší postavení než němčina','Čeština byla zakázána ve všech domácnostech','Čeština neexistovala','Protože se přestalo mluvit německy'],0],['Co národní obrození podporovalo?',['České školství, literaturu, vědu a kulturu','Pouze vojenské výpravy','Zánik škol','Pouze průmyslové továrny'],0],['Co bylo jedním z výsledků národního obrození?',['Posílení českého národního vědomí','Zánik české literatury','Zrušení všech novin','Konec vzdělávání'],0]],
+ ideologies:[['Co nejvíce vystihuje konzervatismus?',['Tradice a opatrné změny','Národní sebeurčení','Osobní svobody','Zrušení všech institucí'],0],['Co zdůrazňuje liberalismus?',['Osobní svobody a občanská práva','Výhradně tradice','Nadřazenost jednoho národa','Feudální robotu'],0],['Co je hlavním tématem nacionalismu?',['Národ a jeho identita','Parní stroj','Církevní kalendář','Pouze hospodářství'],0],['Který pojem patří k liberalismu?',['Občanská práva','Robota','Stavovská privilegia','Dědičné poddanství'],0],['Který směr bývá nejvíce spojen s opatrností vůči rychlým revolucím?',['Konzervatismus','Liberalismus','Nacionalismus','Industrialismus'],0],['Který směr může podporovat vznik národního státu?',['Nacionalismus','Konzervatismus','Merkantilismus','Feudalismus'],0],['Co znamená rovnost před zákonem?',['Stejná právní pravidla pro občany','Zákon platí jen pro šlechtu','Nikdo nemusí dodržovat zákony','Zákon platí jen pro panovníka'],0],['Která dvojice je správně?',['Liberalismus – svobody a práva','Konzervatismus – rychlé revoluce','Nacionalismus – parní stroje','Liberalismus – robota'],0]]
+};
+let historyTopic='',historyQs=[],historyIndex=0,historyCorrect=0,historyEarned=0,historyRun=0;
+function openHistory(){hideAll();document.getElementById('historyScreen').classList.remove('hidden');['historyHome','historyLesson','historyQuiz','historyResult'].forEach(id=>document.getElementById(id).style.display=id==='historyHome'?'grid':'none');update()}
+function showHistoryLesson(topic){historyTopic=topic;document.getElementById('historyHome').style.display='none';document.getElementById('historyLesson').style.display='block';document.getElementById('historyLesson').innerHTML='<h2>'+historyData[topic].title+'</h2>'+historyData[topic].html}
+function startHistoryQuiz(topic){historyTopic=topic;historyQs=[...historyQuestions[topic]].sort(()=>Math.random()-.5);historyIndex=0;historyCorrect=0;historyEarned=0;historyRun=0;document.getElementById('historyLesson').style.display='none';document.getElementById('historyQuiz').style.display='block';renderHistoryQuestion()}
+function renderHistoryQuestion(){const q=historyQs[historyIndex];document.getElementById('historyProgress').textContent=`Otázka ${historyIndex+1}/${historyQs.length}`;document.getElementById('historyQuestion').textContent=q[0];document.getElementById('historyChoices').innerHTML=q[1].map((x,i)=>`<button class="secondary" onclick="answerHistory(${i})">${String.fromCharCode(65+i)}) ${x}</button>`).join('');document.getElementById('historyFeedback').textContent=''}
+function answerHistory(i){const q=historyQs[historyIndex];recordExercise();const ok=i===q[2];let gain=0;if(ok){historyCorrect++;historyRun++;bestStreak=Math.max(bestStreak,historyRun);gain=10+Math.min((historyRun-1)*2,10);points+=gain;dailyPoints+=gain;historyEarned+=gain;document.getElementById('historyFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{historyRun=0;document.getElementById('historyFeedback').textContent=`❌ Špatně. Správně je ${q[1][q[2]]}`}syncTrophies();update();document.querySelectorAll('#historyChoices button').forEach(b=>b.disabled=true);setTimeout(()=>{historyIndex++;if(historyIndex<historyQs.length)renderHistoryQuestion();else finishHistory()},550)}
+function finishHistory(){document.getElementById('historyQuiz').style.display='none';document.getElementById('historyResult').style.display='block';document.getElementById('historyResultText').textContent=`${historyCorrect}/${historyQs.length} správně • ${Math.round(historyCorrect/historyQs.length*100)} %`;document.getElementById('historyPointsText').textContent=`⭐ Získal/a jsi ${historyEarned} bodů • Celkem ${points} bodů`;update()}
+
+/* FYZIKA */
+const physicsData={
+ charge:{title:'⚛️ Elektrický náboj a atom',html:`<div class="lesson"><h3>Elektrický náboj</h3><p>Elektrický náboj je fyzikální vlastnost částic a těles. Existuje <b>kladný</b> a <b>záporný</b> elektrický náboj. Stejné náboje se odpuzují a opačné se přitahují.</p><h3>Atom</h3><p>Atom tvoří jádro a elektronový obal. V jádře jsou protony s kladným nábojem a neutrony bez elektrického náboje. Elektrony mají záporný náboj.</p><h3>Elektricky neutrální atom</h3><p>Atom je elektricky neutrální, když má stejný počet protonů a elektronů. Kladné a záporné náboje se potom navzájem vyruší.</p><h3>Ionty</h3><p>Ion je elektricky nabitý atom nebo částice. Když atom <b>ztratí elektrony</b>, vznikne kladný iont – kation. Když atom <b>přijme elektrony</b>, vznikne záporný iont – anion.</p></div><button class="primary" onclick="startPhysicsQuiz('charge')">🎯 Procvičovat</button>`},
+ charging:{title:'🧲 Elektrování těles',html:`<div class="lesson"><h3>Jak se tělesa elektrují?</h3><p>Při elektrování dochází k přemístění elektronů mezi tělesy nebo uvnitř tělesa. <b>Protony se v běžných situacích nepřemisťují</b>; mění se počet elektronů.</p><h3>Záporně nabité těleso</h3><p>Těleso přijme přebytek elektronů, a proto má více záporného náboje.</p><h3>Kladně nabité těleso</h3><p>Těleso elektrony ztratí, takže v něm převládá kladný náboj.</p><h3>Příklady</h3><p>Tělesa lze elektrovat například třením. Náboj se může projevit přitahováním drobných předmětů nebo jiskrou.</p></div><button class="primary" onclick="startPhysicsQuiz('charging')">🎯 Procvičovat</button>`},
+ electroscope:{title:'📡 Elektroskop',html:`<div class="lesson"><h3>Co je elektroskop?</h3><p>Elektroskop je přístroj, kterým můžeme zjistit, zda je těleso elektricky nabité, a orientačně pozorovat elektrické působení.</p><h3>Jak funguje?</h3><p>Po přivedení náboje se náboj v elektroskopu rozloží. Stejně nabité části se odpuzují, a proto se jeho pohyblivá část vychýlí.</p><h3>Co z něj poznáme?</h3><p>Vychýlení ukazuje, že v elektroskopu působí elektrické síly. Samotný elektroskop ale bez dalšího postupu neurčí vždy znaménko náboje.</p></div><button class="primary" onclick="startPhysicsQuiz('electroscope')">🎯 Procvičovat</button>`},
+ current:{title:'🔋 Elektrický proud',html:`<div class="lesson"><h3>Elektrický proud</h3><p>Elektrický proud je uspořádaný pohyb elektricky nabitých částic. Ve vodičích jsou nositeli proudu především elektrony.</p><h3>Elektrický obvod</h3><p>Aby mohl v jednoduchém obvodu procházet proud, musí být obvod uzavřený. Typicky obsahuje zdroj, vodiče a elektrický spotřebič.</p><h3>Elektrický proud a napětí</h3><p>Elektrický proud značíme <b>I</b> a jeho jednotkou je ampér (A). Elektrické napětí značíme <b>U</b> a jeho jednotkou je volt (V).</p><h3>Odpor</h3><p>Elektrický odpor značíme <b>R</b> a jeho jednotkou je ohm (Ω). Odpor vyjadřuje, jak moc prvek brání průchodu elektrického proudu.</p></div><button class="primary" onclick="startPhysicsQuiz('current')">🎯 Procvičovat</button>`},
+ ohm:{title:'📐 Ohmův zákon',html:`<div class="lesson"><h3>Ohmův zákon</h3><p>Pro vodič za daných podmínek platí vztah <b>U = R · I</b>.</p><h3>Jak vzorec používat?</h3><p><b>U = R · I</b><br><b>I = U ÷ R</b><br><b>R = U ÷ I</b></p><h3>Příklad</h3><p>Rezistor má odpor 10 Ω a připojíme ho k napětí 20 V. Proud je I = U ÷ R = 20 ÷ 10 = <b>2 A</b>.</p><p>U, I a R musíš dosazovat ve správných jednotkách: volt (V), ampér (A) a ohm (Ω).</p></div><button class="primary" onclick="startPhysicsQuiz('ohm')">🎯 Procvičovat</button>`}
+};
+const physicsQuestions={
+ charge:[['Jaký náboj má elektron?',['Kladný','Záporný','Nemá náboj','Střídavý'],1],['Jaký náboj má proton?',['Kladný','Záporný','Nemá náboj','Vždy neutrální'],0],['Kdy je atom elektricky neutrální?',['Když má stejný počet protonů a elektronů','Když nemá neutrony','Když má jen elektrony','Když má více elektronů než protonů'],0],['Co vznikne, když atom ztratí elektrony?',['Kladný iont','Záporný iont','Neutron','Neutrální atom'],0],['Co vznikne, když atom přijme elektrony?',['Kladný iont','Záporný iont','Proton','Neutron'],1],['Které částice mají v atomu záporný náboj?',['Protony','Elektrony','Neutrony','Jádra'],1],['Jak se chovají stejné elektrické náboje?',['Přitahují se','Odpuzují se','Nevzájemně působí','Vždy zaniknou'],1],['Co je ion?',['Elektricky nabitý atom nebo částice','Vždy neutrální atom','Pouze proton','Pouze neutron'],0]],
+ charging:[['Co se při běžném elektrování těles nejčastěji přemisťuje?',['Protony','Elektrony','Neutrony','Celá jádra'],1],['Těleso získalo přebytek elektronů. Jaký má náboj?',['Kladný','Záporný','Neutrální','Neměřitelný'],1],['Těleso ztratilo část elektronů. Jaký má náboj?',['Kladný','Záporný','Neutrální','Vždy nulový'],0],['Co může způsobit elektrování třením?',['Přenos elektronů mezi tělesy','Vznik nových protonů','Zánik atomů','Změnu počtu neutronů v jádře'],0],['Co se stane s elektrony při nabíjení tělesa záporně?',['Těleso jich získá více','Těleso jich ztratí','Všechny zmizí','Přemění se na protony'],0],['Jaký náboj mají dvě stejně nabitá tělesa?',['Stejný typ náboje','Vždy opačný','Nemají náboj','Vždy neutrální'],0]],
+ electroscope:[['K čemu slouží elektroskop?',['Ke zjišťování elektrického náboje','K měření teploty','K měření hmotnosti','K měření času'],0],['Proč se části elektroskopu po nabití mohou od sebe odchýlit?',['Stejné náboje se odpuzují','Opačné náboje se vždy odpuzují','Protože se zahřejí','Protože ztěžknou'],0],['Co znamená vychýlení elektroskopu?',['Působí v něm elektrické síly','Obvod je určitě zkratovaný','Je v něm voda','Nemá žádný náboj'],0],['Dokáže samotný elektroskop vždy určit znaménko náboje?',['Ano, vždy','Ne, bez dalšího postupu ne vždy','Jen v noci','Pouze u kovů'],1],['Co je elektroskop?',['Přístroj pro pozorování elektrického náboje','Zdroj elektrického napětí','Druh baterie','Spotřebič'],0]],
+ current:[['Co je elektrický proud?',['Uspořádaný pohyb elektricky nabitých částic','Náhodný pohyb atomů bez náboje','Teplo','Světlo'],0],['Jaká je jednotka elektrického proudu?',['Volt','Ampér','Ohm','Watt'],1],['Jaká je jednotka elektrického napětí?',['Ampér','Volt','Ohm','Newton'],1],['Jaká je jednotka elektrického odporu?',['Volt','Ampér','Ohm','Joule'],2],['Kdy může v jednoduchém elektrickém obvodu procházet proud?',['Když je obvod uzavřený','Když je obvod přerušený','Jen bez zdroje','Jen bez vodičů'],0],['Co je běžným nositelem elektrického proudu v kovovém vodiči?',['Elektrony','Protony v jádře','Neutrony','Celé atomy'],0]],
+ ohm:[['Který vztah je Ohmův zákon?',['U = R · I','U = R + I','I = R · U','R = U · I'],0],['Jak vypočítáme proud?',['I = U ÷ R','I = R ÷ U','I = U · R','I = U + R'],0],['Jak vypočítáme odpor?',['R = U ÷ I','R = I ÷ U','R = U · I','R = U + I'],0],['Rezistor má 10 Ω a napětí 20 V. Jaký proud prochází rezistorem?',['0,5 A','2 A','10 A','200 A'],1],['Napětí je 12 V a proud 3 A. Jaký je odpor?',['4 Ω','9 Ω','15 Ω','36 Ω'],0],['Proud je 2 A a odpor 5 Ω. Jaké je napětí?',['2,5 V','7 V','10 V','20 V'],2]],
+ mix:[]
+};
+physicsQuestions.mix=[...physicsQuestions.charge,...physicsQuestions.charging,...physicsQuestions.electroscope,...physicsQuestions.current,...physicsQuestions.ohm];
+let physicsTopic='',physicsQs=[],physicsIndex=0,physicsCorrect=0,physicsEarned=0,physicsRun=0;
+function openPhysics(){hideAll();document.getElementById('physicsScreen').classList.remove('hidden');['physicsHome','physicsLesson','physicsQuiz','physicsResult'].forEach(id=>document.getElementById(id).style.display=id==='physicsHome'?'grid':'none');update()}
+function showPhysicsLesson(topic){physicsTopic=topic;document.getElementById('physicsHome').style.display='none';document.getElementById('physicsLesson').style.display='block';document.getElementById('physicsLesson').innerHTML='<h2>'+physicsData[topic].title+'</h2>'+physicsData[topic].html}
+function startPhysicsQuiz(topic){physicsTopic=topic;physicsQs=[...physicsQuestions[topic]].sort(()=>Math.random()-.5);physicsIndex=0;physicsCorrect=0;physicsEarned=0;physicsRun=0;document.getElementById('physicsHome').style.display='none';document.getElementById('physicsLesson').style.display='none';document.getElementById('physicsQuiz').style.display='block';document.getElementById('physicsResult').style.display='none';renderPhysicsQuestion()}
+function renderPhysicsQuestion(){const q=physicsQs[physicsIndex];document.getElementById('physicsProgress').textContent=`Otázka ${physicsIndex+1}/${physicsQs.length}`;document.getElementById('physicsQuestion').textContent=q[0];document.getElementById('physicsChoices').innerHTML=q[1].map((x,i)=>`<button class="secondary" onclick="answerPhysics(${i})">${String.fromCharCode(65+i)}) ${x}</button>`).join('');document.getElementById('physicsFeedback').textContent=''}
+function answerPhysics(i){const q=physicsQs[physicsIndex];recordExercise();const ok=i===q[2];let gain=0;if(ok){physicsCorrect++;physicsRun++;bestStreak=Math.max(bestStreak,physicsRun);gain=10+Math.min((physicsRun-1)*2,10);points+=gain;dailyPoints+=gain;physicsEarned+=gain;document.getElementById('physicsFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{physicsRun=0;document.getElementById('physicsFeedback').textContent=`❌ Špatně. Správně je ${q[1][q[2]]}`}syncTrophies();update();document.querySelectorAll('#physicsChoices button').forEach(b=>b.disabled=true);setTimeout(()=>{physicsIndex++;if(physicsIndex<physicsQs.length)renderPhysicsQuestion();else finishPhysics()},550)}
+function finishPhysics(){document.getElementById('physicsQuiz').style.display='none';document.getElementById('physicsResult').style.display='block';document.getElementById('physicsResultText').textContent=`${physicsCorrect}/${physicsQs.length} správně • ${Math.round(physicsCorrect/physicsQs.length*100)} %`;document.getElementById('physicsPointsText').textContent=`⭐ Získal/a jsi ${physicsEarned} bodů • Celkem ${points} bodů`;update()}
+
+/* PŘÍRODOPIS */
+const bioQuestions=[['Kde vznikají u mužů spermie?',['Ve varlatech','V žaludku','V játrech','V plicích'],0],['Který orgán produkuje vajíčka?',['Vaječníky','Ledviny','Srdce','Plíce'],0],['Co je oplození?',['Spojení vajíčka a spermie','Dělení žaludku','Růst kostí','Tvorba krve'],0],['Kde se během těhotenství vyvíjí embryo a později plod?',['V děloze','V žaludku','V ledvině','V plicích'],0],['Co je puberta?',['Období tělesných a hormonálních změn při dospívání','Nemoc','Druh potravy','Spánek'],0],['Který hormon je důležitý pro vývoj mužských pohlavních znaků?',['Testosteron','Inzulin','Adrenalin','Melatonin'],0],['Který hormon je důležitý pro ženský reprodukční systém?',['Estrogen','Hemoglobin','Keratin','Glukagon'],0],['Jak se nazývá období od oplození do porodu?',['Těhotenství','Trávení','Puberta','Regenerace'],0]];
+function openBiology(){hideAll();document.getElementById('bioScreen').classList.remove('hidden');['bioHome','bioLesson','bioQuiz','foodExercise','bioResult'].forEach(id=>document.getElementById(id).style.display=id==='bioHome'?'grid':'none');update()}
+function showBioLesson(){document.getElementById('bioHome').style.display='none';document.getElementById('bioLesson').style.display='block';document.getElementById('bioLesson').innerHTML=`<h2>🧍 Lidské tělo a rozmnožování</h2><div class="lesson"><h3>Puberta</h3><p>Puberta je období dospívání, kdy se tělo postupně mění a dozrává. Změny řídí hormony a probíhají u každého člověka trochu jinak.</p><h3>Muži</h3><p>Mezi hlavní části mužské rozmnožovací soustavy patří varlata, nadvarlata, chámovody, prostata a penis. Ve varlatech vznikají spermie.</p><h3>Ženy</h3><p>Mezi hlavní části ženské rozmnožovací soustavy patří vaječníky, vejcovody, děloha a pochva. Ve vaječnících dozrávají vajíčka.</p><h3>Oplození a těhotenství</h3><p>Oplození je spojení vajíčka a spermie. Po oplození se zárodek vyvíjí v děloze. Těhotenství u člověka obvykle trvá přibližně 9 měsíců.</p></div><button class="primary" onclick="startBioQuiz()">🎯 Procvičovat</button>`}
+let bioQs=[],bioIndex=0,bioCorrect=0,bioEarned=0,bioRun=0;
+function startBioQuiz(){bioQs=[...bioQuestions].sort(()=>Math.random()-.5);bioIndex=0;bioCorrect=0;bioEarned=0;bioRun=0;document.getElementById('bioLesson').style.display='none';document.getElementById('bioQuiz').style.display='block';renderBioQuestion()}
+function renderBioQuestion(){const q=bioQs[bioIndex];document.getElementById('bioProgress').textContent=`Otázka ${bioIndex+1}/${bioQs.length}`;document.getElementById('bioQuestion').textContent=q[0];document.getElementById('bioChoices').innerHTML=q[1].map((x,i)=>`<button class="secondary" onclick="answerBio(${i})">${String.fromCharCode(65+i)}) ${x}</button>`).join('');document.getElementById('bioFeedback').textContent=''}
+function answerBio(i){const q=bioQs[bioIndex];recordExercise();const ok=i===q[2];let gain=0;if(ok){bioCorrect++;bioRun++;bestStreak=Math.max(bestStreak,bioRun);gain=10+Math.min((bioRun-1)*2,10);points+=gain;dailyPoints+=gain;bioEarned+=gain;document.getElementById('bioFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{bioRun=0;document.getElementById('bioFeedback').textContent=`❌ Špatně. Správně je ${q[1][q[2]]}`}syncTrophies();update();document.querySelectorAll('#bioChoices button').forEach(b=>b.disabled=true);setTimeout(()=>{bioIndex++;if(bioIndex<bioQs.length)renderBioQuestion();else finishBio()},550)}
+function finishBio(){document.getElementById('bioQuiz').style.display='none';document.getElementById('bioResult').style.display='block';document.getElementById('bioResultText').textContent=`${bioCorrect}/${bioQs.length} správně • ${Math.round(bioCorrect/bioQs.length*100)} %`;document.getElementById('bioPointsText').textContent=`⭐ Získal/a jsi ${bioEarned} bodů • Celkem ${points} bodů`;update()}
+const foodQuestions=[['Chléb','Sacharidy'],['Rýže','Sacharidy'],['Brambory','Sacharidy'],['Olej','Tuky'],['Máslo','Tuky'],['Ořechy','Tuky'],['Kuřecí maso','Bílkoviny'],['Vejce','Bílkoviny'],['Tvaroh','Bílkoviny'],['Čočka','Bílkoviny'],['Jablko','Sacharidy'],['Sýr','Bílkoviny']];
+function startFoodExercise(){document.getElementById('bioHome').style.display='none';document.getElementById('foodExercise').style.display='block';document.getElementById('foodFeedback').textContent='';document.getElementById('foodGrid').innerHTML=foodQuestions.map((f,i)=>`<div class="food-item"><b>${f[0]}</b><select id="food${i}"><option value="">Vyber...</option><option>Sacharidy</option><option>Tuky</option><option>Bílkoviny</option></select></div>`).join('')}
+function checkFoodExercise(){recordExercise();let correct=0;foodQuestions.forEach((f,i)=>{if(document.getElementById('food'+i).value===f[1])correct++});const gain=correct===foodQuestions.length?30:Math.round(correct*2);points+=gain;dailyPoints+=gain;totalCorrect+=correct;bestStreak=Math.max(bestStreak,correct);syncTrophies();update();document.getElementById('foodFeedback').textContent=`${correct}/${foodQuestions.length} správně • +${gain} bodů ⭐ • Celkem ${points} bodů`}
+
+
+
+const vkoData={
+ state:{title:'🏛️ Co je stát a jak vzniká?',html:`<div class="lesson"><h3>Co je stát?</h3><p>Stát je politické společenství lidí, které má své území, obyvatelstvo a veřejnou moc. Stát vytváří a uplatňuje pravidla a vystupuje jako celek vůči ostatním státům.</p><h3>Základní znaky státu</h3><ul><li>👥 <b>obyvatelstvo</b> – lidé žijící na území státu</li><li>🗺️ <b>území</b> – vymezený prostor, nad kterým stát vykonává svou moc</li><li>🏛️ <b>státní moc</b> – orgány, které řídí stát a prosazují právo</li><li>🌍 <b>suverenita</b> – nejvyšší moc státu uvnitř jeho území a nezávislost navenek</li></ul><p>Vznik státu může mít různé historické příčiny. Státy například vznikaly sjednocením území, rozpadem jiných států nebo vyhlášením nezávislosti.</p></div><button class="primary" onclick="startVkoQuiz('state')">🎯 Procvičovat</button>`},
+ types:{title:'🗺️ Druhy států',html:`<div class="lesson"><h3>Unitární stát</h3><p>V unitárním státě existuje jeden hlavní systém státní moci pro celé území. Některé pravomoci mohou být přeneseny na kraje nebo obce.</p><h3>Federace</h3><p>Federace se skládá z více částí, například států, zemí nebo republik. Tyto části mají vlastní pravomoci, které jsou stanovené ústavou.</p><p><b>Příklad:</b> Česká republika je unitární stát, zatímco USA nebo Německo jsou federace.</p></div><button class="primary" onclick="startVkoQuiz('types')">🎯 Procvičovat</button>`},
+ forms:{title:'👑 Formy státu',html:`<div class="lesson"><h3>Monarchie</h3><p>V čele státu je monarcha, například král nebo císař. V absolutní monarchii má monarcha velmi rozsáhlou moc, zatímco v konstituční monarchii je jeho moc omezena ústavou a dalšími institucemi.</p><h3>Republika</h3><p>Hlavou státu je prezident nebo jiný volený představitel. V demokratické republice se státní moc odvozuje od občanů a je omezena ústavou a zákony.</p></div><button class="primary" onclick="startVkoQuiz('forms')">🎯 Procvičovat</button>`},
+ recognition:{title:'🌍 Suverenita a mezinárodní uznání',html:`<div class="lesson"><h3>Suverenita</h3><p>Suverenita znamená, že stát má nejvyšší veřejnou moc na svém území a je navenek nezávislý na jiné státní moci.</p><h3>Mezinárodní uznání</h3><p>Uznání ostatními státy je velmi důležité pro běžné mezinárodní vztahy, diplomacii a spolupráci. Samotné uznání ale není jednoduchou podmínkou, která by automaticky vytvořila stát. Státnost se posuzuje podle více znaků a v praxi může být sporná.</p></div><button class="primary" onclick="startVkoQuiz('recognition')">🎯 Procvičovat</button>`},
+ liberland:{title:'🏴 Liberland jako příklad',html:`<div class="lesson"><h3>Co je Liberland?</h3><p>Liberland se vyhlásil jako mikrostát v roce 2015 na území u Dunaje mezi Českou republikou a Chorvatskem. Jeho představitelé ho označují za svobodný stát.</p><h3>Proč je to zajímavý příklad?</h3><p>Je dobré na něm ukázat rozdíl mezi tím, když někdo stát vyhlásí, a tím, když jeho státnost široce přijme mezinárodní společenství. Liberland není široce mezinárodně uznávaným státem a jeho status je sporný.</p><p>Proto nestačí jednoduše říct: „Vyhlásili jsme stát, takže stát automaticky vznikl.“</p></div><button class="primary" onclick="startVkoQuiz('liberland')">🎯 Procvičovat</button>`}};
+const vkoQuestions={
+ state:[['Který z těchto prvků patří mezi základní znaky státu?',['Obyvatelstvo','Pouze vlajka','Pouze hlavní město','Pouze měna'],0],['Co označuje území státu?',['Prostor, nad kterým stát vykonává svou moc','Jen místo hlavního města','Pouze pobřeží','Území jiného státu'],0],['Co znamená suverenita státu?',['Nezávislost a nejvyšší veřejná moc státu','Že stát nemá zákony','Že stát nemá hranice','Že stát musí mít krále'],0],['Jak může stát historicky vzniknout?',['Například vyhlášením nezávislosti nebo rozpadem jiného státu','Pouze koupí vlajky','Pouze založením firmy','Pouze změnou měny'],0]],
+ types:[['Jaký je unitární stát?',['Má jeden hlavní systém státní moci pro celé území','Nemá žádnou vládu','Musí mít krále','Je vždy bez ústavy'],0],['Co je typické pro federaci?',['Skládá se z částí, které mají vlastní ústavně stanovené pravomoci','Nemá území','Má pouze jednu obec','Nemá státní moc'],0],['Jaký typ státu je Česká republika?',['Unitární stát','Federace','Konfederace','Monarchie'],0]],
+ forms:[['Co je monarchie?',['Stát, v jehož čele je monarcha','Stát bez vlády','Vždy vojenský stát','Stát bez zákonů'],0],['Co je republika?',['Forma státu, v níž není dědičný monarcha hlavou státu','Vždy absolutní monarchie','Stát bez prezidenta nebo jiné hlavy státu','Pouze federace'],0],['Co platí pro konstituční monarchii?',['Moc monarchy je omezena ústavou a dalšími institucemi','Monarcha má neomezenou moc','Neexistují zákony','Stát nemá parlament'],0]],
+ recognition:[['Co znamená suverenita?',['Nezávislost státu navenek a nejvyšší veřejná moc uvnitř','Povinnost poslouchat jiný stát','Že stát nemá hranice','Pouze členství v EU'],0],['Je mezinárodní uznání jedinou podmínkou existence státu?',['Ne, státnost se posuzuje podle více znaků a uznání je důležité hlavně pro mezinárodní vztahy','Ano, vždy je to jediná podmínka','Ano, stačí jeden podpis','Ne, stát nemusí mít vůbec území'],0],['Proč je uznání ostatními státy důležité?',['Usnadňuje diplomatické a mezinárodní vztahy','Protože určuje počet obyvatel','Protože nahrazuje území','Protože ruší ústavu'],0]],
+ liberland:[['Kdy byl Liberland vyhlášen?',['2015','1989','1945','2020'],0],['Proč se Liberland používá jako zajímavý příklad ve VKO?',['Ukazuje rozdíl mezi vyhlášením státu a širokým mezinárodním uznáním','Protože je federací USA','Protože je členským státem OSN','Protože je monarchií'],0],['Je Liberland široce mezinárodně uznávaným státem?',['Ne','Ano, všemi státy světa','Ano, je členem OSN','Ano, automaticky od svého vyhlášení'],0]],
+ all:[]};
+Object.values(vkoQuestions).forEach(a=>{if(a!==vkoQuestions.all)vkoQuestions.all.push(...a)});
+let vkoQs=[],vkoIndex=0,vkoCorrect=0,vkoEarned=0,vkoRun=0;
+function openVko(){hideAll();document.getElementById('vkoScreen').classList.remove('hidden');['vkoHome','vkoLesson','vkoQuiz','vkoResult'].forEach(id=>document.getElementById(id).style.display=id==='vkoHome'?'grid':'none');update()}
+function showVkoLesson(topic){document.getElementById('vkoHome').style.display='none';document.getElementById('vkoLesson').style.display='block';document.getElementById('vkoQuiz').style.display='none';document.getElementById('vkoResult').style.display='none';document.getElementById('vkoLesson').innerHTML='<h2>'+vkoData[topic].title+'</h2>'+vkoData[topic].html}
+function startVkoQuiz(topic){vkoQs=[...vkoQuestions[topic]].sort(()=>Math.random()-.5);vkoIndex=0;vkoCorrect=0;vkoEarned=0;vkoRun=0;document.getElementById('vkoHome').style.display='none';document.getElementById('vkoLesson').style.display='none';document.getElementById('vkoQuiz').style.display='block';document.getElementById('vkoResult').style.display='none';renderVkoQuestion()}
+function renderVkoQuestion(){const q=vkoQs[vkoIndex];document.getElementById('vkoProgress').textContent=`Otázka ${vkoIndex+1}/${vkoQs.length}`;document.getElementById('vkoQuestion').textContent=q[0];document.getElementById('vkoChoices').innerHTML=q[1].map((x,i)=>`<button class="secondary" onclick="answerVko(${i})">${String.fromCharCode(65+i)}) ${x}</button>`).join('');document.getElementById('vkoFeedback').textContent=''}
+function answerVko(i){const q=vkoQs[vkoIndex];recordExercise();const ok=i===q[2];let gain=0;if(ok){vkoCorrect++;vkoRun++;bestStreak=Math.max(bestStreak,vkoRun);gain=10+Math.min((vkoRun-1)*2,10);points+=gain;dailyPoints+=gain;vkoEarned+=gain;document.getElementById('vkoFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{vkoRun=0;document.getElementById('vkoFeedback').textContent=`❌ Špatně. Správně je ${String.fromCharCode(65+q[2])}) ${q[1][q[2]]}`}syncTrophies();update();document.querySelectorAll('#vkoChoices button').forEach(b=>b.disabled=true);setTimeout(()=>{vkoIndex++;if(vkoIndex<vkoQs.length)renderVkoQuestion();else finishVko()},550)}
+function finishVko(){document.getElementById('vkoQuiz').style.display='none';document.getElementById('vkoResult').style.display='block';document.getElementById('vkoResultText').textContent=`${vkoCorrect}/${vkoQs.length} správně • ${Math.round(vkoCorrect/vkoQs.length*100)} %`;document.getElementById('vkoPointsText').textContent=`⭐ Získal/a jsi ${vkoEarned} bodů • Celkem ${points} bodů`;update()}
+
+const geographyData={
+ flood:{title:'🌊 Povodeň u pobřeží',html:`<div class="lesson"><h3>Modelová situace</h3><p>Farma leží blízko moře. Silná bouře způsobí vysokou vlnu a část polí zaplaví slaná voda.</p><h3>Co může následovat?</h3><p>Část úrody se zničí, farmář má menší množství produkce k prodeji a může mít náklady na obnovu polí a budov. Pokud podobná událost zasáhne více producentů, nabídka některých potravin může klesnout a ceny mohou růst. Neznamená to ale, že každá povodeň automaticky zdraží všechny potraviny.</p><p>Skutečné studie potvrzují, že povodně mohou poškodit zemědělství, infrastrukturu i podniky a mít přímé i nepřímé ekonomické dopady. citeturn0search4turn0search10</p></div><button class="primary" onclick="startGeographyQuiz('flood')">🎯 Procvičovat</button>`},
+ drought:{title:'☀️ Sucho a zemědělství',html:`<div class="lesson"><h3>Modelová situace</h3><p>V zemědělském regionu několik měsíců téměř neprší. Farmáři mají méně vody a část plodin nedoroste.</p><h3>Ekonomický dopad</h3><p>Menší úroda znamená menší nabídku. Pokud poptávka zůstane podobná, může cena některých produktů růst. Farmář zároveň může přijít o část příjmu a investovat do zavlažování.</p></div><button class="primary" onclick="startGeographyQuiz('drought')">🎯 Procvičovat</button>`},
+ transport:{title:'🚢 Doprava a ceny',html:`<div class="lesson"><h3>Modelová situace</h3><p>Důležitá dopravní trasa je na několik týdnů omezená. Zboží musí cestovat delší cestou.</p><h3>Co se mění?</h3><p>Delší nebo složitější doprava může zvýšit náklady. Ty se mohou částečně promítnout do ceny zboží. Některé dodávky mohou mít zpoždění a obchody mohou mít dočasně menší zásoby.</p></div><button class="primary" onclick="startGeographyQuiz('transport')">🎯 Procvičovat</button>`},
+ disaster:{title:'🌋 Katastrofa a region',html:`<div class="lesson"><h3>Modelová situace</h3><p>Silné zemětřesení poškodí silnice, domy a několik podniků v jednom regionu.</p><h3>Dopad</h3><p>Obnova stojí peníze, doprava může být omezená a některé podniky dočasně nefungují. Region může přijít o část výroby a příjmů. Zároveň mohou vzniknout nové pracovní příležitosti při opravách a rekonstrukci.</p></div><button class="primary" onclick="startGeographyQuiz('disaster')">🎯 Procvičovat</button>`},
+ market:{title:'🌾 Úroda a trh',html:`<div class="lesson"><h3>Modelová situace</h3><p>Farmáři běžně sklidí 100 tun pšenice. Kvůli špatnému počasí sklidí jen 60 tun.</p><h3>Co se může stát?</h3><p>Na trhu je méně pšenice. Pokud poptávka výrazně neklesne, může vzniknout tlak na růst ceny. Dopad závisí také na zásobách, dovozu a dalších pěstitelích.</p></div><button class="primary" onclick="startGeographyQuiz('market')">🎯 Procvičovat</button>`}};
+const geographyQuestions={
+ flood:[['Farma u moře byla zaplavena slanou vodou. Co je nejpřímější problém?',['Více úrody','Poškození plodin a půdy','Levnější doprava','Větší zásoby'],1],['Více farem přijde kvůli záplavě o část úrody. Co může nastat?',['Nabídka může klesnout','Nabídka určitě vzroste','Cena musí být vždy nulová','Doprava se zrychlí'],0],['Proč může být obnova farmy drahá?',['Protože je potřeba opravit poškozený majetek','Protože se zvýší počet slunečných dnů','Protože přibude úrody','Protože zmizí poptávka'],0]],
+ drought:[['Dlouhé sucho zničí část úrody. Co se stane s nabídkou této plodiny?',['Může klesnout','Musí vzrůst','Nemění se nikdy','Zmizí poptávka'],0],['Pokud je méně produkce a podobná poptávka, co může nastat s cenou?',['Může růst','Musí klesnout na nulu','Nemůže se změnit','Vždy klesne'],0],['Co může farmář udělat jako adaptační opatření?',['Zavést účinnější zavlažování','Zvýšit sucho','Zastavit veškerou dopravu','Snížit déšť'],0]],
+ transport:[['Dopravní trasa se prodlouží. Co může vzrůst?',['Náklady na dopravu','Množství úrody','Počet továren automaticky','Srážky'],0],['Co může obchod zaznamenat při výpadku dopravy?',['Zpoždění dodávek','Automaticky levnější zboží','Více zásob bez dodávek','Žádnou změnu'],0],['Proč může zboží zdražit?',['Vyšší přepravní náklady se mohou promítnout do ceny','Protože je kratší cesta','Protože je více zboží','Protože zmizí náklady'],0]],
+ disaster:[['Zemětřesení poškodí silnice a továrny. Co je přímý dopad?',['Poškození infrastruktury a výroby','Větší úroda','Více turistů vždy','Levnější opravy'],0],['Proč může region dočasně vyrábět méně?',['Některé podniky nebo doprava jsou poškozené','Protože přibude pracovníků','Protože se zvýší sklizeň','Protože se zkrátí opravy'],0],['Co může po katastrofě naopak vzrůst?',['Potřeba rekonstrukce a oprav','Počet poškozených budov klesne bez oprav','Výroba všech podniků','Množství srážek'],0]],
+ market:[['Farmáři sklidili 60 tun místo 100 tun. Co se stalo s nabídkou?',['Klesla','Vzrostla','Zdvojnásobila se','Nemění se'],0],['Co může při menší nabídce a podobné poptávce nastat?',['Tlak na růst ceny','Cena vždy klesne','Poptávka zmizí','Zboží je automaticky zdarma'],0],['Co může zmírnit růst ceny?',['Dovoz nebo zásoby','Další ztráta úrody','Uzavření všech obchodů','Vyšší škody'],0]],
+ all:[]};
+Object.values(geographyQuestions).forEach((arr)=>{if(arr!==geographyQuestions.all) geographyQuestions.all.push(...arr)});
+let geographyQs=[],geographyIndex=0,geographyCorrect=0,geographyEarned=0,geographyRun=0;
+function openGeography(){hideAll();document.getElementById('geographyScreen').classList.remove('hidden');['geographyHome','geographyLesson','geographyQuiz','geographyResult'].forEach(id=>document.getElementById(id).style.display=id==='geographyHome'?'grid':'none');update()}
+function showGeographyLesson(topic){document.getElementById('geographyHome').style.display='none';document.getElementById('geographyLesson').style.display='block';document.getElementById('geographyQuiz').style.display='none';document.getElementById('geographyResult').style.display='none';document.getElementById('geographyLesson').innerHTML='<h2>'+geographyData[topic].title+'</h2>'+geographyData[topic].html}
+function startGeographyQuiz(topic){geographyQs=[...geographyQuestions[topic]].sort(()=>Math.random()-.5);geographyIndex=0;geographyCorrect=0;geographyEarned=0;geographyRun=0;document.getElementById('geographyHome').style.display='none';document.getElementById('geographyLesson').style.display='none';document.getElementById('geographyQuiz').style.display='block';document.getElementById('geographyResult').style.display='none';renderGeographyQuestion()}
+function renderGeographyQuestion(){const q=geographyQs[geographyIndex];document.getElementById('geographyProgress').textContent=`Otázka ${geographyIndex+1}/${geographyQs.length}`;document.getElementById('geographyQuestion').textContent=q[0];document.getElementById('geographyChoices').innerHTML=q[1].map((x,i)=>`<button class="secondary" onclick="answerGeography(${i})">${String.fromCharCode(65+i)}) ${x}</button>`).join('');document.getElementById('geographyFeedback').textContent=''}
+function answerGeography(i){const q=geographyQs[geographyIndex];recordExercise();const ok=i===q[2];let gain=0;if(ok){geographyCorrect++;geographyRun++;bestStreak=Math.max(bestStreak,geographyRun);gain=10+Math.min((geographyRun-1)*2,10);points+=gain;dailyPoints+=gain;geographyEarned+=gain;document.getElementById('geographyFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{geographyRun=0;document.getElementById('geographyFeedback').textContent=`❌ Špatně. Správně je ${String.fromCharCode(65+q[2])}) ${q[1][q[2]]}`}syncTrophies();update();document.querySelectorAll('#geographyChoices button').forEach(b=>b.disabled=true);setTimeout(()=>{geographyIndex++;if(geographyIndex<geographyQs.length)renderGeographyQuestion();else finishGeography()},550)}
+function finishGeography(){document.getElementById('geographyQuiz').style.display='none';document.getElementById('geographyResult').style.display='block';document.getElementById('geographyResultText').textContent=`${geographyCorrect}/${geographyQs.length} správně • ${Math.round(geographyCorrect/geographyQs.length*100)} %`;document.getElementById('geographyPointsText').textContent=`⭐ Získal/a jsi ${geographyEarned} bodů • Celkem ${points} bodů`;update()}
+
+
+const chemistryData={
+ oxides:{title:'🧪 Oxidy',html:`<div class="lesson"><h3>Co jsou oxidy?</h3><p>Oxidy jsou dvouprvkové sloučeniny kyslíku s jiným prvkem. Kyslík má v běžných oxidech oxidační číslo −II.</p><div class="math-box"><b>Příklad:</b><br>CO₂ = oxid uhličitý<br>Fe₂O₃ = oxid železitý</div><h3>Názvosloví</h3><p>U názvu sleduj oxidační číslo prvku a správnou koncovku.</p></div><button class="primary" onclick="startChemQuiz('oxides')">🎯 Procvičovat</button>`},
+ sulfides:{title:'🟡 Sulfidy',html:`<div class="lesson"><h3>Co jsou sulfidy?</h3><p>Sulfidy jsou dvouprvkové sloučeniny síry s jiným prvkem. Síra má v sulfidech obvykle oxidační číslo −II.</p><div class="math-box"><b>Příklad:</b><br>Na₂S = sulfid sodný<br>FeS = sulfid železnatý</div></div><button class="primary" onclick="startChemQuiz('sulfides')">🎯 Procvičovat</button>`},
+ halides:{title:'🟢 Halogenidy',html:`<div class="lesson"><h3>Co jsou halogenidy?</h3><p>Halogenidy jsou sloučeniny halogenů s jiným prvkem. Patří sem například chloridy, fluoridy, bromidy a jodidy.</p><div class="math-box"><b>Příklady:</b><br>NaCl = chlorid sodný<br>CaF₂ = fluorid vápenatý<br>KBr = bromid draselný</div></div><button class="primary" onclick="startChemQuiz('halides')">🎯 Procvičovat</button>`},
+ acids:{title:'🧴 Kyseliny',html:`<div class="lesson"><h3>Co jsou kyseliny?</h3><p>Kyseliny jsou látky, jejichž vodné roztoky mají kyselé vlastnosti. Ve vzorcích běžných anorganických kyselin často najdeš vodík na začátku.</p><div class="math-box"><b>Příklady:</b><br>HCl = kyselina chlorovodíková<br>H₂SO₄ = kyselina sírová<br>HNO₃ = kyselina dusičná</div><h3>Bezpečnost ⚠️</h3><p>S koncentrovanými kyselinami se pracuje pouze podle pokynů učitele a laboratorních pravidel. Kyseliny mohou být žíravé.</p></div><button class="primary" onclick="startChemQuiz('acids')">🎯 Procvičovat</button>`},
+ ph:{title:'📊 pH',html:`<div class="lesson"><h3>Stupnice pH</h3><p>pH vyjadřuje kyselost nebo zásaditost vodného roztoku. Ve školním zjednodušení platí: pH &lt; 7 kyselé, pH = 7 neutrální, pH &gt; 7 zásadité.</p><div class="math-box"><b>Příklady:</b><br>pH 2 → kyselé<br>pH 7 → neutrální<br>pH 10 → zásadité</div><p>Čím nižší pH, tím kyselejší prostředí; čím vyšší pH, tím zásaditější prostředí.</p></div><button class="primary" onclick="startChemQuiz('ph')">🎯 Procvičovat</button>`},
+ lab:{title:'🔬 Laboratorní práce',html:`<div class="lesson"><h3>Základní pravidla</h3><ul><li>Dodržuj pokyny učitele a laboratorní řád.</li><li>Pracuj opatrně a používej ochranné pomůcky podle pokynů.</li><li>Látky neochutnávej a nečichej přímo z nádoby.</li><li>Pozorování a výsledky zapisuj přesně.</li></ul></div><button class="primary" onclick="startChemQuiz('lab')">🎯 Procvičovat</button>`}
+};
+const chemistryQuestions={
+ oxides:[['Co je oxid?',['Sloučenina kyslíku s jiným prvkem','Směs dvou kovů','Čistý kyslík','Sloučenina pouze vodíku a síry'],0],['Jaký je název CO₂?',['Oxid uhelnatý','Oxid uhličitý','Oxid vápenatý','Oxid siřičitý'],1],['Jaký je vzorec oxidu železitého?',['FeO','Fe₂O₃','FeCl₃','FeS'],1],['Jaké oxidační číslo má kyslík v běžných oxidech?',['−I','−II','+I','+II'],1]],
+ sulfides:[['Co je sulfid?',['Sloučenina síry s jiným prvkem','Sloučenina kyslíku s vodíkem','Čistá síra','Sloučenina chloru s vodíkem'],0],['Jaký je vzorec sulfidu sodného?',['NaS','Na₂S','Na₂SO₄','NS'],1],['Jaký je název FeS?',['Sulfid železnatý','Sulfid železitý','Oxid železnatý','Chlorid železnatý'],0]],
+ halides:[['Která látka je chlorid?',['NaCl','Na₂S','CO₂','H₂SO₄'],0],['Jaký je vzorec fluoridu vápenatého?',['CaF','CaF₂','Ca₂F','CF₂'],1],['Jaký je název KBr?',['Bromid draselný','Chlorid draselný','Bromičnan draselný','Sulfid draselný'],0]],
+ acids:[['Který vzorec patří kyselině chlorovodíkové?',['HCl','H₂SO₄','HNO₃','NaCl'],0],['Jaký je název H₂SO₄?',['Kyselina siřičitá','Kyselina sírová','Kyselina sirovodíková','Kyselina dusičná'],1],['Jaký je název HNO₃?',['Kyselina dusičná','Kyselina dusitá','Kyselina chlorovodíková','Kyselina sírová'],0]],
+ ph:[['Roztok s pH 3 je podle školní stupnice…',['kyselý','neutrální','zásaditý','bez pH'],0],['Jaké pH je neutrální?',['0','5','7','14'],2],['Roztok s pH 11 je…',['kyselý','neutrální','zásaditý','vždy čistá voda'],2],['Které pH je kyselejší?',['pH 2','pH 5','pH 7','pH 10'],0]],
+ lab:[['Co je při práci s chemikáliemi nejdůležitější?',['Dodržovat pokyny a bezpečnostní pravidla','Ochutnat látku','Pracovat bez ochranných pomůcek vždy','Míchat všechny látky dohromady'],0],['Jak se mají zapisovat výsledky pozorování?',['Přesně a podle skutečného pozorování','Podle toho, co by mělo vyjít','Jen zpaměti','Nemusí se zapisovat'],0]],
+ all:[]};
+Object.keys(chemistryQuestions).forEach(k=>{if(k!=='all') chemistryQuestions.all.push(...chemistryQuestions[k])});
+let chemQs=[],chemIndex=0,chemCorrect=0,chemEarned=0,chemRun=0;
+function openChemistry(){hideAll();document.getElementById('chemistryScreen').classList.remove('hidden');['chemistryHome','chemistryLesson','chemistryQuiz','chemistryResult'].forEach(id=>document.getElementById(id).style.display=id==='chemistryHome'?'grid':'none');update()}
+function showChemLesson(topic){document.getElementById('chemistryHome').style.display='none';document.getElementById('chemistryLesson').style.display='block';document.getElementById('chemistryQuiz').style.display='none';document.getElementById('chemistryResult').style.display='none';document.getElementById('chemistryLesson').innerHTML='<h2>'+chemistryData[topic].title+'</h2>'+chemistryData[topic].html}
+function startChemQuiz(topic){chemQs=[...chemistryQuestions[topic]].sort(()=>Math.random()-.5);chemIndex=0;chemCorrect=0;chemEarned=0;chemRun=0;document.getElementById('chemistryHome').style.display='none';document.getElementById('chemistryLesson').style.display='none';document.getElementById('chemistryQuiz').style.display='block';document.getElementById('chemistryResult').style.display='none';renderChemQuestion()}
+function renderChemQuestion(){const q=chemQs[chemIndex];document.getElementById('chemProgress').textContent=`Otázka ${chemIndex+1}/${chemQs.length}`;document.getElementById('chemQuestion').textContent=q[0];document.getElementById('chemChoices').innerHTML=q[1].map((x,i)=>`<button class="secondary" onclick="answerChem(${i})">${String.fromCharCode(65+i)}) ${x}</button>`).join('');document.getElementById('chemFeedback').textContent=''}
+function answerChem(i){const q=chemQs[chemIndex];const ok=i===q[2];recordExercise();let gain=0;if(ok){chemCorrect++;chemRun++;bestStreak=Math.max(bestStreak,chemRun);gain=10+Math.min((chemRun-1)*2,10);points+=gain;dailyPoints+=gain;chemEarned+=gain;document.getElementById('chemFeedback').textContent=`✅ Správně! +${gain} bodů ⭐ • Celkem ${points} bodů`}else{chemRun=0;document.getElementById('chemFeedback').textContent=`❌ Špatně. Správně je ${String.fromCharCode(65+q[2])}) ${q[1][q[2]]}`}syncTrophies();update();document.querySelectorAll('#chemChoices button').forEach(b=>b.disabled=true);setTimeout(()=>{chemIndex++;if(chemIndex<chemQs.length)renderChemQuestion();else finishChem()},550)}
+function finishChem(){document.getElementById('chemistryQuiz').style.display='none';document.getElementById('chemistryResult').style.display='block';document.getElementById('chemResultText').textContent=`${chemCorrect}/${chemQs.length} správně • ${Math.round(chemCorrect/chemQs.length*100)} %`;document.getElementById('chemPointsText').textContent=`⭐ Získal/a jsi ${chemEarned} bodů • Celkem ${points} bodů`;update()}
+
+
+function openOrion(){
+  hideAll();
+  document.getElementById('orionScreen').classList.remove('hidden');
+  const box=document.getElementById('orionMessages');
+  if(box && !box.dataset.started){
+    addOrionMessage('Ahoj! 👋 Jsem Orion AI. Zeptej se mě, co můžeš dělat v Playgroundu, kde něco najdeš nebo jak fungují body, série a odměny. 🤖','orion');
+    box.dataset.started='1';
+  }
+  update();
+}
+function addOrionMessage(text,type){
+  const box=document.getElementById('orionMessages');
+  if(!box)return;
+  const el=document.createElement('div');
+  el.className='orion-msg '+type;
+  el.textContent=text;
+  box.appendChild(el);
+  box.scrollTop=box.scrollHeight;
+}
+function normalizeOrion(text){
+  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+}
+function getOrionResponse(text){
+  const q=normalizeOrion(text);
+  if(!q)return 'Napiš mi otázku a zkusím pomoct. 🤖';
+  if(/^(ahoj|cau|nazdar|dobry den|dobre rano|dobry vecer)\b/.test(q)) return 'Ahoj! 👋 Jsem Orion AI. Co potřebuješ zjistit o Playgroundu?';
+  if(q.includes('co tu muzu delat')||q.includes('co muzu delat')||q.includes('jak funguje playground')||q.includes('co tu je')) return 'V Playgroundu můžeš procvičovat školní předměty, dělat kvízy, sbírat ⭐ body, držet 🔥 sérii, odemykat 🏆 poháry a 🎖️ odznaky a používat obchod odměn. 🎮';
+  if(q.includes('jake tu jsou predmety')||q.includes('jake jsou predmety')||q.includes('jake predmety')||q.includes('mate tu chemii')||q.includes('je tu matematika')) return 'Najdeš tu němčinu 🇩🇪, angličtinu 🇬🇧, matematiku 📐, chemii ⚗️, češtinu 📚, dějepis 🌍, přírodopis 🧬, fyziku ⚡, zeměpis 🌍, výchovu k občanství 🏛️ a také mě – Orion AI 🤖. Španělština 🇪🇸 je zatím připravovaná.';
+  if(q.includes('kde najdu matematiku')||q.includes('kde je matematika')) return 'Na hlavní stránce najdi kartu 📐 Matematika a klepni na ni. 🧮';
+  if(q.includes('jak se vratim domu')||q.includes('jak se vratim na hlavni')||q.includes('jak na hlavni stranku')) return 'V otevřeném předmětu použij tlačítko „← Playground“. To tě vrátí na hlavní stránku. 🏠';
+  if(q.includes('kde jsou kvizy')||q.includes('kde jsou testy')) return 'Kvízy jsou uvnitř jednotlivých předmětů. Vyber předmět a spusť jeho cvičení nebo test. 📝';
+  if(q.includes('co je streak')||q.includes('co je serie')||q.includes('co znamena streak')) return '🔥 Streak je tvoje série správných odpovědí za sebou. Když odpovíš správně, pokračuje; chybná odpověď ji v daném procvičování přeruší.';
+  if(q.includes('jak ziskam body')||q.includes('jak dostanu body')||q.includes('jak ziskat body')) return '⭐ Body získáváš za správné odpovědi v cvičeních. Delší série může přidat bonusové body.';
+  if(q.includes('k cemu jsou trofeje')||q.includes('co jsou trofeje')||q.includes('co jsou pohary')) return '🏆 Poháry jsou odměny za dosažené milníky, například za určitý počet bodů nebo dlouhou sérii.';
+  if(q.includes('co je v obchode')||q.includes('co si muzu koupit')||q.includes('jak funguji odmeny')) return '🛒 V obchodě najdeš nápovědy, přeskočení otázky, bonusový život a profilové rámečky. Platí se za ně ⭐ body.';
+  if(q.includes('jak se prihlasim')||q.includes('jak funguje muj ucet')||q.includes('jak se prihlasit')) return '👤 Klepni nahoře na „Účet“, zadej svůj e-mail a zvol „Přihlásit“. Playground si pak na tomto zařízení pamatuje tvoje body, série a odměny.';
+  if(q.includes('jak se odhlasim')||q.includes('odhlasit')) return '👤 Otevři „Účet“ a dole klepni na „Odhlásit“. ';
+  if(q.includes('funguje playground na mobilu')||q.includes('funguje na mobil')||q.includes('funguje na telefonu')) return '📱 Ano. Playground můžeš otevřít v prohlížeči na telefonu. Na iPhonu ho můžeš také přidat na plochu jako webovou aplikaci.';
+  if(q.includes('funguje na pocitaci')||q.includes('funguje na pc')||q.includes('funguje na notebooku')) return '💻 Ano, Playground funguje v běžném moderním webovém prohlížeči na počítači nebo notebooku.';
+  if(q.includes('jak si ho pridam na plochu')||q.includes('jak pridat na plochu')) return '📱 Otevři Playground v prohlížeči a použij možnost přidání na plochu. Název možnosti se může podle zařízení lišit.';
+  if(q.includes('nerozumim')||q.includes('jak zacnu')||q.includes('co mam delat')||q.includes('pomoc')) return '🆘 Začni výběrem předmětu na hlavní stránce. Pak si vyber cvičení a můžeš začít. Když nevíš, kde něco najít, zeptej se mě. 🤖';
+  if(q.includes('kdo jsi')||q.includes('co jsi')||q.includes('co umis')) return '🤖 Jsem Orion AI – základní pomocník Playgroundu. Zatím ti pomáhám hlavně s orientací a otázkami o funkcích Playgroundu.';
+  return 'Hmm, tomu zatím úplně nerozumím. 🤔 Zkus se mě zeptat třeba „Co tu můžu dělat?“, „Jaké tu jsou předměty?“ nebo „Co je streak?“';
+}
+function askOrion(text){
+  if(document.getElementById('orionScreen').classList.contains('hidden')) openOrion();
+  addOrionMessage(text,'user');
+  setTimeout(()=>addOrionMessage(getOrionResponse(text),'orion'),180);
+}
+function sendOrionMessage(){
+  const input=document.getElementById('orionInput');
+  if(!input)return;
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  askOrion(text);
+}
+function applyHalloweenTheme(){
+  const d=new Date();
+  const auto=d.getMonth()===9 && d.getDate()>=25 && d.getDate()<=31;
+  const saved=localStorage.getItem('pg_halloween');
+  const on=saved===null?auto:saved==='on';
+  document.body.classList.toggle('halloween',on);
+  const btn=document.getElementById('halloweenToggle');
+  if(btn) btn.textContent=on?'🎃 Halloween ON':'🎃 Halloween';
+}
+function toggleHalloween(){
+  const on=document.body.classList.contains('halloween');
+  localStorage.setItem('pg_halloween',on?'off':'on');
+  applyHalloweenTheme();
+}
+function applyTheme(theme){
+  const dark=theme==='dark';
+  document.body.classList.toggle('dark',dark);
+  localStorage.setItem('pg_theme',dark?'dark':'light');
+  const btn=document.getElementById('themeToggle');
+  if(btn) btn.textContent=dark?'☀️ Světlý':'🌙 Tmavý';
+}
+function toggleTheme(){
+  applyTheme(document.body.classList.contains('dark')?'light':'dark');
+}
+function initHalloween(){
+  const now=new Date();
+  const month=now.getMonth()+1, day=now.getDate();
+  const autoHalloween=(month===10 && day>=25)||(month===10 && day<=31);
+  const saved=localStorage.getItem('pg_halloween');
+  const enabled=saved==='on' || (saved===null && autoHalloween);
+  document.body.classList.toggle('halloween',enabled);
+}
+function toggleHalloween(){
+  const enabled=!document.body.classList.contains('halloween');
+  document.body.classList.toggle('halloween',enabled);
+  localStorage.setItem('pg_halloween',enabled?'on':'off');
+}
+
+function initTheme(){
+  const saved=localStorage.getItem('pg_theme')||'light';
+  applyTheme(saved);
+}
+
+function initAccount(){
+ if(currentEmail && accounts[currentEmail]){
+   loadAccount(currentEmail);
+   document.getElementById("accountScreenEmail").textContent=currentEmail;
+   goHome();
+ }else{
+   document.getElementById("accountEmail").textContent="Nepřihlášen";
+   document.getElementById("accountScreenEmail").textContent="nepřihlášen";
+   hideAll();
+   document.getElementById("accountScreen").classList.remove("hidden");
+ }
+}
+
+const originalLoadAccount=loadAccount;
+loadAccount=function(email){originalLoadAccount(email);document.getElementById("accountScreenEmail").textContent=email;}
+document.getElementById('czechAnswer')?.addEventListener('keydown',e=>{if(e.key==='Enter')submitCzechAnswer()});
+document.getElementById('orionInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')sendOrionMessage()});
+initTheme();
+applyHalloweenTheme();
+initHalloween();
+initAccount();
+restorePersistentState();
+</script>
+</body>
+</html>
